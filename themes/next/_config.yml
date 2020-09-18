@@ -14,7 +14,7 @@ cache:
   enable: true
 
 # Remove unnecessary files after hexo generate.
-minify: true
+minify: false
 
 # Define custom file paths.
 # Create your custom files in site directory `source/_data` and uncomment needed files below.
@@ -36,13 +36,13 @@ custom_file_path:
 # ---------------------------------------------------------------
 
 # Schemes
-# scheme: Muse
-scheme: Mist
-# scheme: Pisces
-# scheme: Gemini
+scheme: Muse
+#scheme: Mist
+#scheme: Pisces
+#scheme: Gemini
 
 # Dark Mode
-darkmode: true
+darkmode: false
 
 
 # ---------------------------------------------------------------
@@ -67,7 +67,7 @@ custom_logo: #/uploads/custom-logo.jpg
 # CC licenses are available in 39 languages, you can find the specific and correct abbreviation you need on https://creativecommons.org
 creative_commons:
   license: by-nc-sa
-  sidebar: true
+  sidebar: false
   post: false
   language:
 
@@ -79,16 +79,17 @@ creative_commons:
 # Usage: `Key: /link/ || icon`
 # Key is the name of menu item. If the translation for this item is available, the translated text will be loaded, otherwise the Key name will be used. Key is case-senstive.
 # Value before `||` delimiter is the target link, value after `||` delimiter is the name of Font Awesome icon.
+# When running the site in a subdirectory (e.g. yoursite.com/blog), remove the leading slash from link value (/archives -> archives).
 # External url should start with http:// or https://
 menu:
-  Home: / || fa fa-home
-  # About: /about/ || fa fa-user
-  # tags: /tags/ || fa fa-tags
-  # Categories: /categories/ || fa fa-th
-  Archives: /archives/ || fa fa-archive
-  # schedule: /schedule/ || fa fa-calendar
-  # sitemap: /sitemap.xml || fa fa-sitemap
-  # commonweal: /404/ || fa fa-heartbeat
+  #home: / || fa fa-home
+  #about: /about/ || fa fa-user
+  #tags: /tags/ || fa fa-tags
+  #categories: /categories/ || fa fa-th
+  #archives: /archives/ || fa fa-archive
+  #schedule: /schedule/ || fa fa-calendar
+  #sitemap: /sitemap.xml || fa fa-sitemap
+  #commonweal: /404/ || fa fa-heartbeat
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
@@ -104,7 +105,7 @@ menu_settings:
 sidebar:
   # Sidebar Position.
   position: left
-  # position: right
+  #position: right
 
   # Manual define the sidebar width. If commented, will be default for:
   # Muse | Mist: 320
@@ -126,7 +127,7 @@ sidebar:
 # Sidebar Avatar
 avatar:
   # Replace the default image and set the url here.
-  url: /images/avatar.jpg
+  url: #/images/avatar.gif
   # If true, the avatar will be dispalyed in circle.
   rounded: false
   # If true, the avatar will be rotated with the cursor.
@@ -140,8 +141,8 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  GitHub: https://github.com/6cdh || fab fa-github
-  Mail: mailto:cd6cdh@gmail.com || fa fa-envelope
+  #GitHub: https://github.com/yourname || fab fa-github
+  #E-Mail: mailto:yourname@gmail.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || fab fa-weibo
   #Google: https://plus.google.com/yourname || fab fa-google
   #Twitter: https://twitter.com/yourname || fab fa-twitter
@@ -153,7 +154,7 @@ social:
 
 social_icons:
   enable: true
-  icons_only: true
+  icons_only: false
   transition: false
 
 # Blog rolls
@@ -164,7 +165,7 @@ links_settings:
   layout: block
 
 links:
-  #Title: https://example.com
+  #Title: http://yoursite.com
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
@@ -353,14 +354,14 @@ codeblock:
   # Code Highlight theme
   # All available themes: https://theme-next.js.org/highlight/
   theme:
-    light: tomorrow
+    light: default
     dark: tomorrow-night
   prism:
     light: prism
     dark: prism-dark
   # Add copy button on codeblock
   copy_button:
-    enable: true
+    enable: false
     # Available values: default | flat | mac
     style:
 
@@ -495,7 +496,7 @@ baidu_push: false
 # Server-side plugin: https://github.com/next-theme/hexo-filter-mathjax
 math:
   # Default (false) will load mathjax / katex script on demand.
-  # That is it only render those page which has `mathjax: true` in front-matter.
+  # That is it only render those page which has `mathjax: true` in Front-matter.
   # If you set it to true, it will load mathjax / katex srcipt EVERY PAGE.
   every_page: false
 
@@ -503,7 +504,7 @@ math:
     enable: false
 
   katex:
-    enable: true
+    enable: false
     # See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex
     copy_tex: false
 
@@ -563,11 +564,11 @@ comments:
   style: tabs
   # Choose a comment system to be displayed by default.
   # Available values: changyan | disqus | disqusjs | gitalk | livere | valine
-  active: disqus
+  active:
   # Setting `true` means remembering the comment system selected by the visitor.
   storage: true
   # Lazyload all comment systems.
-  lazyload: true
+  lazyload: false
   # Modify texts or order for any navs, here are some examples.
   nav:
     #disqus:
@@ -578,8 +579,8 @@ comments:
 
 # Disqus
 disqus:
-  enable: true
-  shortname: 6cdh-github-io
+  enable: false
+  shortname:
   count: true
 
 # DisqusJS
@@ -729,7 +730,7 @@ algolia_search:
 # Local Search
 # Dependencies: https://github.com/next-theme/hexo-generator-searchdb
 local_search:
-  enable: true
+  enable: false
   # If auto, trigger search by changing input.
   # If manual, trigger search by pressing enter key or search button.
   trigger: auto
@@ -825,10 +826,13 @@ motion:
     sidebar: fadeInUp
 
 # Progress bar in the top during page loading.
-# For more information: https://github.com/rstacruz/nprogress
-nprogress:
+# For more information: https://github.com/HubSpot/pace
+pace:
   enable: false
-  spinner: true
+  # Themes list:
+  # big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple
+  # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
+  theme: minimal
 
 # Canvas ribbon
 # For more information: https://github.com/hustcc/ribbon.js
@@ -849,7 +853,7 @@ canvas_ribbon:
 # Remember to use the https protocol of CDN links when you enable https on your site.
 vendors:
   # The CDN provider of NexT internal scripts.
-  # Available values: local | jsdelivr | unpkg | cdnjs
+  # Available values: local | jsdelivr | unpkg
   # Warning: If you are using the latest master branch of NexT, please set `internal: local`
   internal: local
   # The default CDN provider of third-party plugins.
@@ -886,7 +890,7 @@ vendors:
 
   # FancyBox
   jquery:
-  fancybox_js:
+  fancybox:
   fancybox_css:
 
   # Medium-zoom
@@ -927,9 +931,9 @@ vendors:
   # Warning: motion won't work with animate.css version 3.2.0 or later
   animate_css:
 
-  # NProgress.js
-  nprogress_js:
-  nprogress_css:
+  # Pace.js
+  pace:
+  pace_css:
 
   # Canvas ribbon
   canvas_ribbon:
