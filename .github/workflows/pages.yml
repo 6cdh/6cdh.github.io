@@ -22,7 +22,9 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache
       - name: Install pandoc
-        run: apt-get install pandoc
+        run: |
+          wget https://github.com/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb
+          sudo dpkg -i pandoc-1.10.1-1-amd64.deb
       - name: Install Dependencies
         run: npm install
       - name: Build
