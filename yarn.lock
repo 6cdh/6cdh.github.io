@@ -1071,13 +1071,10 @@ hexo-renderer-ejs@^1.0.0:
   dependencies:
     ejs "^2.6.1"
 
-hexo-renderer-marked@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/hexo-renderer-marked/-/hexo-renderer-marked-3.2.0.tgz#a5e18b4d69b61706142427d12c4c542461e7ffa2"
-  integrity sha512-p1ICjucz9VOIbSmK198BQBEYnSyF/Z5pNh0u7PmvZihfJZL2V4iyF/G88BBvwDCCVJG2oYsgLam6nmn8JnishQ==
-  dependencies:
-    hexo-util "^2.1.0"
-    marked "^1.0.0"
+hexo-renderer-pandoc@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/hexo-renderer-pandoc/-/hexo-renderer-pandoc-0.3.0.tgz#c8f4006cfdb9f9999eeeb0302e5275fb2f0bf02d"
+  integrity sha512-6O/OsnKy0RFf5Zgxk3lSxbslld7Nmc83vJZs0H+CNKdiTNfJV+ZAB9c/xAFC1XFwgqwtt5kKUoVMqXds4RZwKA==
 
 hexo-renderer-pug@^1.0.0:
   version "1.0.0"
@@ -1465,11 +1462,6 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
   integrity sha1-2TPOuSBdgr3PSIb2dCvcK03qFG0=
-
-marked@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-1.1.1.tgz#e5d61b69842210d5df57b05856e0c91572703e6a"
-  integrity sha512-mJzT8D2yPxoPh7h0UXkB+dBj4FykPJ2OIfxAWeIHrvoHDkFxukV/29QxoFQoPM6RLEwhIFdJpmKBlqVM3s2ZIw==
 
 meow@^3.7.0:
   version "3.7.0"
