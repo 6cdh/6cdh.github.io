@@ -23,7 +23,8 @@ jobs:
             ${{ runner.OS }}-npm-cache
       - name: Install pandoc
         run: |
-          sudo apt-get install -y pandoc
+          wget https://github.com/jgm/pandoc/releases/download/2.10.1/pandoc-2.10.1-1-amd64.deb
+          sudo dpkg -i pandoc-2.10.1-1-amd64.deb
       - name: Install Dependencies
         run: npm install
       - name: Build
