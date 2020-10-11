@@ -1,6 +1,7 @@
 ---
 title: 递归转换为迭代的通用技术
 date: 2020-10-07 11:54:55
+updated: 2020-10-11
 mathjax: true
 tags:
 - C++

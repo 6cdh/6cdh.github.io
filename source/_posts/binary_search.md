@@ -1,6 +1,7 @@
 ---
 title: 二分搜索及其变种
 date: 2020-09-23 02:52:13
+updated: 2020-10-07
 ---
 
 二分搜索 _(binary search)_ 也称折半搜索 _(half-interval search)_, 用于在有序数组上搜索给定值的位置. 这是一个常见的搜索算法, 似乎没什么难度. 然而, 在解决 [Leetcode 35 (Search Insert Position)](https://leetcode.com/problems/search-insert-position/) 时, 我意识到对二分搜索及其变种的理解还不够, 因此记录一下.
