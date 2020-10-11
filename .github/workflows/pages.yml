@@ -27,7 +27,7 @@ jobs:
           sudo dpkg -i pandoc-2.10.1-1-amd64.deb
       - name: Restore updated time
         run: |
-          "git ls-files -z | while read -d '' path; do touch -d \"$(git log -1 --format=\"@%ct\" \"$path\")\" \"$path\"; done"
+          git ls-files -z | while read -d '' path; do touch -d "$(git log -1 --format=\"@%ct\" $path)" "$path"; done
       - name: Install Dependencies
         run: npm install
       - name: Build
