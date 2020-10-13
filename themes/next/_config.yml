@@ -1,5 +1,5 @@
 # ===============================================================
-# It's recommended to use Alternate Theme Config to configure the theme
+# It's recommended to use Alternate Theme Config to configure NexT
 # Modifying this file may result in merge conflict
 # See: https://theme-next.js.org/docs/getting-started/configuration
 # ===============================================================
@@ -79,7 +79,6 @@ creative_commons:
 # Usage: `Key: /link/ || icon`
 # Key is the name of menu item. If the translation for this item is available, the translated text will be loaded, otherwise the Key name will be used. Key is case-senstive.
 # Value before `||` delimiter is the target link, value after `||` delimiter is the name of Font Awesome icon.
-# When running the site in a subdirectory (e.g. yoursite.com/blog), remove the leading slash from link value (/archives -> archives).
 # External url should start with http:// or https://
 menu:
   #home: / || fa fa-home
@@ -165,7 +164,7 @@ links_settings:
   layout: block
 
 links:
-  #Title: http://yoursite.com
+  #Title: https://example.com
 
 # Table of Contents in the Sidebar
 # Front-matter variable (unsupport wrap expand_all).
@@ -496,7 +495,7 @@ baidu_push: false
 # Server-side plugin: https://github.com/next-theme/hexo-filter-mathjax
 math:
   # Default (false) will load mathjax / katex script on demand.
-  # That is it only render those page which has `mathjax: true` in Front-matter.
+  # That is it only render those page which has `mathjax: true` in front-matter.
   # If you set it to true, it will load mathjax / katex srcipt EVERY PAGE.
   every_page: false
 
@@ -609,6 +608,7 @@ valine:
   enable: false
   appId: # Your leancloud application appid
   appKey: # Your leancloud application appkey
+  serverURLs: # When the custom domain name is enabled, fill it in here
   placeholder: Just go go # Comment box placeholder
   avatar: mm # Gravatar style
   meta: [nick, mail, link] # Custom comment header
@@ -617,7 +617,6 @@ valine:
   visitor: false # Article reading statistic
   comment_count: true # If false, comment count will only be displayed in post page, not in home page
   recordIP: false # Whether to record the commenter IP
-  serverURLs: # When the custom domain name is enabled, fill it in here (it will be detected automatically by default, no need to fill in)
   enableQQ: false # Whether to enable the Nickname box to automatically get QQ Nickname and QQ Avatar
   requiredFields: [] # Set required fields: [nick] | [nick, mail]
 
@@ -826,13 +825,10 @@ motion:
     sidebar: fadeInUp
 
 # Progress bar in the top during page loading.
-# For more information: https://github.com/HubSpot/pace
-pace:
+# For more information: https://github.com/rstacruz/nprogress
+nprogress:
   enable: false
-  # Themes list:
-  # big-counter | bounce | barber-shop | center-atom | center-circle | center-radar | center-simple
-  # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
-  theme: minimal
+  spinner: true
 
 # Canvas ribbon
 # For more information: https://github.com/hustcc/ribbon.js
@@ -853,7 +849,7 @@ canvas_ribbon:
 # Remember to use the https protocol of CDN links when you enable https on your site.
 vendors:
   # The CDN provider of NexT internal scripts.
-  # Available values: local | jsdelivr | unpkg
+  # Available values: local | jsdelivr | unpkg | cdnjs
   # Warning: If you are using the latest master branch of NexT, please set `internal: local`
   internal: local
   # The default CDN provider of third-party plugins.
@@ -890,7 +886,7 @@ vendors:
 
   # FancyBox
   jquery:
-  fancybox:
+  fancybox_js:
   fancybox_css:
 
   # Medium-zoom
@@ -931,9 +927,9 @@ vendors:
   # Warning: motion won't work with animate.css version 3.2.0 or later
   animate_css:
 
-  # Pace.js
-  pace:
-  pace_css:
+  # NProgress.js
+  nprogress_js:
+  nprogress_css:
 
   # Canvas ribbon
   canvas_ribbon:
