@@ -8,7 +8,7 @@ subtitle: ''
 description: 6cdh's Blog
 keywords:
 author: 6cdh
-language: cn
+language: en
 timezone: ''
 
 # URL
@@ -112,13 +112,12 @@ search:
 markdown:
   render:
     html: true
-    xhtmlOut: true
+    xhtmlOut: false 
     breaks: true
     linkify: true
     typographer: true
     quotes: '“”‘’'
   plugins:
-    - markdown-it-katex
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
