@@ -1,13 +1,13 @@
 ---
 title: C++ 模板参数推导
 date: 2020-10-19 22:14:18
-updated: 2020-10-19
+updated: 2020-10-21
 tags:
 - C++
 - template
 ---
 
-实例化函数模板时, 模板实参必须是已知的, 但不必显式指定. 编译器会从函数模板的实参中推导缺失的模板实参.
+实例化函数模板时, 模板实参必须是已知的, 但不必显式指定. 编译器会从函数模板的实参中推导缺失的模板实参. 另外模板参数推导也可以在 `auto` 说明符的上下文中从初始化器推导变量的类型.
 
 <!-- more -->
 
@@ -105,6 +105,52 @@ void f(T) [T = int]
 |   `T&&`    |      `int &&`       |         `int`         |
 | `const T&` |      `int &&`       |         `int`         |
 
+## auto 类型推导
+
+C++11 中, 对于包含 `auto` 的变量声明, `auto` 被一个虚构的模板参数 U 替换, 实参 A 是初始化表达式, 按照模板参数推导的规则从 P 和 A 推导出 U 后, 将 U 代入 P 得到实际的变量类型.
+
+例如
+
+```c++
+const auto& x = 1 + 2;
+```
+
+用 U 替换 `auto`, 得到
+
+```c++
+const U& x = 1 + 2;
+```
+
+这里 P 是 `const U&`, A 是 `1 + 2`, A 的类型为 `int`, 使用模板参数推导的规则, U 是 `int`, 因此变量 `x` 的类型为 `const int &`.
+
+`auto` 类型推导基本与模板参数推导相同, 不同的一点是如果 A 是拷贝列表初始化, 则 U 被替换为 `std::initializer_list<U>`.
+
+## 函数返回类型推导
+
+C++14 中, 对于返回 `auto` 的函数, `auto` 被一个虚构的模板参数 U 替换, 参数 A 是 `return` 语句的表达式, 如果 `return` 语句没有操作数, A 为 `void()`. 使用上面的规则推导 U, 然后获得实际的返回类型.
+
+例如
+
+```c++
+auto f() {
+    return 42;
+}
+```
+
+其中 A 是 42, 类型为 `int`. 因此 U 被推导为 `int`, 函数返回类型也为 `int`.
+
+如果返回语句是 `return ;` 或没有返回语句, A 被认为是 `void()`. 因此, 下面的函数
+
+```c++
+auto f() {
+    return;
+}
+```
+
+的返回类型为 `void`.
+
+如果有多条 `return` 语句, 上述规则会对每条 `return` 语句执行, 如果它们的实际返回类型不同, 会引发编译错误.
+
 ## 类模板参数推导 _(Class template argument deduction, CTAD)_
 
 C++17 将模板参数推导扩展到了仅给出类模板名称的对象构造. 例如
@@ -147,4 +193,5 @@ container(Iter b, Iter e)
 
 - [Class template argument deduction (CTAD) (since C++17) - cppreference.com](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction)
 - [How to Use Class Template Argument Deduction | C++ Team Blog](https://devblogs.microsoft.com/cppblog/how-to-use-class-template-argument-deduction/)
+- Effective Modern C++
 
