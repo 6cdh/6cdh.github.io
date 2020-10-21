@@ -149,6 +149,27 @@ auto f() {
 
 的返回类型为 `void`.
 
+对于下面的函数
+
+```c++
+// C++14
+#include <type_traits>
+
+const auto f() {
+    return 42;
+}
+
+static_assert(std::is_same<decltype(f()), const int>::value, "error");
+```
+
+如果按照模板参数推导的规则, `f` 的返回值应该是 `const int`. 但是上面的 `static_cast` 会失败:
+
+```c++
+error: static_assert failed due to requirement 'std::is_same<int, const int>::value' "error"
+```
+
+看起来 f 的返回类型实际上是 `int`. 这是由于非引用类型的函数返回值是纯右值, 而非类非数组的纯右值不能被 cv 限定, 因此虽然 f 的返回类型是 `const int`, 但它的 `const` 属性会被立刻剥离.
+
 如果有多条 `return` 语句, 上述规则会对每条 `return` 语句执行, 如果它们的实际返回类型不同, 会引发编译错误.
 
 ## 类模板参数推导 _(Class template argument deduction, CTAD)_
@@ -194,4 +215,5 @@ container(Iter b, Iter e)
 - [Class template argument deduction (CTAD) (since C++17) - cppreference.com](https://en.cppreference.com/w/cpp/language/class_template_argument_deduction)
 - [How to Use Class Template Argument Deduction | C++ Team Blog](https://devblogs.microsoft.com/cppblog/how-to-use-class-template-argument-deduction/)
 - Effective Modern C++
+- [Value categories - cppreference.com](https://en.cppreference.com/w/cpp/language/value_category)
 
