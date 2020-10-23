@@ -1,7 +1,7 @@
 ---
 title: C++ 模板参数推导
 date: 2020-10-19 22:14:18
-updated: 2020-10-21
+updated: 2020-10-23
 tags:
 - C++
 - template
@@ -190,7 +190,7 @@ p 会被推导为 `std::pair<int, double>`. `static_assert` 验证了这点.
 
 ## 推导指引
 
-如果构造函数是模板函数, CTAD 不会工作. 因此 C++17 也允许使用推导指引 _(deduction guide)_. 它指示编译器如何从类模板参数中推导构造函数模板的参数.
+如果构造函数是模板函数, CTAD 不会工作. 因此 C++17 也允许使用推导指引 _(deduction guide)_. 它指示编译器如何从构造函数模板的参数中推导类模板参数.
 
 ```c++
 #include <iterator>
