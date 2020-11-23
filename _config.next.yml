@@ -116,7 +116,7 @@ sidebar:
   #  - always  expand for all pages automatically.
   #  - hide    expand only when click on the sidebar toggle icon.
   #  - remove  totally remove sidebar including sidebar toggle.
-  display: post
+  display: hide
 
   # Sidebar padding in pixels.
   padding: 18
@@ -208,7 +208,7 @@ footer:
     # If you want to animate the icon, set it to true.
     animated: false
     # Change the color of icon, using Hex Code.
-    color: "#ff0000"
+    color: "#000000"
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
   copyright:
@@ -353,8 +353,8 @@ codeblock:
   # Code Highlight theme
   # All available themes: https://theme-next.js.org/highlight/
   theme:
-    light: tomorrow
-    dark: tomorrow-night
+    light: atom-one-light
+    dark: atom-one-dark
   prism:
     light: prism
     dark: prism-dark
@@ -408,7 +408,7 @@ github_banner:
 # ---------------------------------------------------------------
 
 font:
-  enable: false
+  enable: true
 
   # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
   host:
@@ -420,8 +420,8 @@ font:
 
   # Global font settings used for all elements inside <body>.
   global:
-    external: true
-    family: Lato
+    external: false
+    family: SF UI Text, Segoe UI, PingFang SC
     size:
 
   # Font settings for site title (.site-title).
@@ -443,8 +443,8 @@ font:
 
   # Font settings for <code> and code blocks.
   codes:
-    external: true
-    family:
+    external: false
+    family: SF Mono
 
 
 # ---------------------------------------------------------------
