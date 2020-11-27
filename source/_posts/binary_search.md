@@ -1,7 +1,7 @@
 ---
 title: 二分搜索及其变种
 date: 2020-09-23 02:52:13
-updated: 2020-10-07
+updated: 2020-11-27
 ---
 
 二分搜索 _(binary search)_ 也称折半搜索 _(half-interval search)_, 用于在有序数组上搜索给定值的位置. 这是一个常见的搜索算法, 似乎没什么难度. 然而, 在解决 [Leetcode 35 (Search Insert Position)](https://leetcode.com/problems/search-insert-position/) 时, 我意识到对二分搜索及其变种的理解还不够, 因此记录一下.
@@ -92,8 +92,7 @@ size_t binary_search_v2(const Container& arr,
 
 首先, 我们假设数组中有一个目标值. 那么初始条件 `arr[0] <= target`.
 
-- 如果 `arr[0] == target`, 那么 `arr[mid] >= target` 始终成立, `right = mid` 始终被执行, 即 `right` 不断的向 0 移动,
-  最后返回 0.
+- 如果 `arr[0] == target`, 那么 `arr[mid] >= target` 始终成立, `right = mid` 始终被执行, 即 `right` 不断的向 0 移动, 最后返回 0.
 - 如果 `arr[0] < target`, 当 `left` 或 `right` 第一次遇到 `target` 并指向它后, 另一方都会向它移动直到它们相等并退出.
 
 这时, 算法总会找到目标值.
@@ -107,8 +106,7 @@ size_t binary_search_v2(const Container& arr,
 
 现在假设数组中没有目标值, 那么初始条件 `arr[0] > target` 或 `arr[0] < target` 且数组中没有目标值.
 
-如果 `arr[0] > target`, `right = mid` 始终被执行, 直到返回. 因此返回的是索引 0. 而且 `arr[0]` 是大于 `target`
-的最小元素.
+如果 `arr[0] > target`, `right = mid` 始终被执行, 直到返回. 因此返回的是索引 0. 而且 `arr[0]` 是大于 `target` 的最小元素.
 
 如果 `arr[0] < target` 即数组中只有大于 `target` 和小于 `target` 的元素. `left` 和 `right` 都在相向移动. 那么它们最后会移动到哪呢?
 
@@ -136,11 +134,9 @@ size_t binary_search_v2(const Container& arr,
        mid
 ```
 
-但是, 执行 `right = mid` 的前提是 `arr[mid] >= target`, 上图的布局又不满足这个条件, 因此 `right = mid`
-不可能被执行.
+但是, 执行 `right = mid` 的前提是 `arr[mid] >= target`, 上图的布局又不满足这个条件, 因此 `right = mid` 不可能被执行.
 
-因此, 如果不存在目标值, 算法会找到大于它的最小元素, 这个位置也是如果插入目标值, 它将会在的位置.
-如果还不存在, 返回 `arr.size()` 即尾后元素索引.
+因此, 如果不存在目标值, 算法会找到大于它的最小元素, 这个位置也是如果插入目标值, 它将会在的位置. 如果还不存在, 返回 `arr.size()` 即尾后元素索引.
 
 总之, 版本 2 的二分搜索总是找到相同目标值的最左边那个元素, 如果不存在, 它会找到如果要插入目标值, 目标值应该在的位置, 这个位置现在保存的是大于目标值的最小元素, 如果这个位置还不存在, 返回 `arr.size()`. 同时, 我们还简单的证明了如果目标值不存在且 `arr[0] < target`, 那么最后执行的分支总是 `left = mid + 1`.
 
@@ -164,8 +160,7 @@ size_t binary_search_v3(const Container& arr,
 }
 ```
 
-版本 3 和版本 2 的差别是 `arr[mid] == target` 时执行的分支由 `right = mid` 改为了 `left = mid + 1`. 另外最后返回
-`left - 1`.
+版本 3 和版本 2 的差别是 `arr[mid] == target` 时执行的分支由 `right = mid` 改为了 `left = mid + 1`. 另外最后返回 `left - 1`.
 
 版本 3 的二分搜索总是找到相同目标值的最右边那个元素, 如果不存在, 它会找到小于目标值的最大元素, 如果还不存在, 返回 `arr.size()`. 如果目标值不存在且 `arr[0] < target`, 那么最后执行的分支总是 `left = mid + 1`.
 
