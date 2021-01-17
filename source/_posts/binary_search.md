@@ -1,7 +1,10 @@
 ---
 title: 二分搜索及其变种
 date: 2020-09-23 02:52:13
-updated: 2020-11-27
+updated: 2021-01-17
+tags:
+  - C++
+  - Binary search
 ---
 
 二分搜索 _(binary search)_ 也称折半搜索 _(half-interval search)_, 用于在有序数组上搜索给定值的位置. 这是一个常见的搜索算法, 似乎没什么难度. 然而, 在解决 [Leetcode 35 (Search Insert Position)](https://leetcode.com/problems/search-insert-position/) 时, 我意识到对二分搜索及其变种的理解还不够, 因此记录一下.
@@ -84,61 +87,60 @@ size_t binary_search_v2(const Container& arr,
 
 上面的代码可能不太好理解, 这就是二分搜索的难点所在, 只要修改一些细微之处, 就可以搜索满足各种条件的值.
 
-下面简单的讨论一下版本 2 算法的属性. 大致分为三种情况:
+为了证明该程序是正确的, 我们需要证明以下 4 个属性:
 
-- 数组中有一个目标值.
-- 数组中有多个目标值.
-- 数组中没有目标值.
+1. 程序的初始条件是正确的.
+2. 循环过程中, 始终维持某个不变式成立.
+3. 程序会终止.
+4. 程序终止时会产生正确的 (我们想要的) 结果.
 
-首先, 我们假设数组中有一个目标值. 那么初始条件 `arr[0] <= target`.
+显然, 只要这些属性满足, 程序一定是正确的.
 
-- 如果 `arr[0] == target`, 那么 `arr[mid] >= target` 始终成立, `right = mid` 始终被执行, 即 `right` 不断的向 0 移动, 最后返回 0.
-- 如果 `arr[0] < target`, 当 `left` 或 `right` 第一次遇到 `target` 并指向它后, 另一方都会向它移动直到它们相等并退出.
+为了方便, 我们令 $a$ 表示我们需要搜索的有序数组, $x=\text{target}, L=0, R=\text{size}(a), m=\text{mid}$, 这样, 区间 $[L, R)$ 也可以表示我们需要搜索的有序数组. 在每次循环时, $\text{left, right}$ 的值分别保存给 $l, r$, 每轮循环结束时, $\text{left, right}$ 的值发生变化.
 
-这时, 算法总会找到目标值.
+然后定义一个不变式 $P: (\text{right}-\text{left} < r-l)\land ([L, \text{left}) < x)\land (x \le[\text{right}, R))$. 注意 $\land$ 表示逻辑与, 不变式 $P$ 保证三个条件成立:
 
-现在假设数组中有多个目标值, 那么初始条件 `arr[0] <= target`.
+1. $\text{right}-\text{left} < r-l$ 表示每轮循环都会导致 $[\text{left, right})$ 缩小.
+2. $[L, \text{left}) < x$ 表示区间 $[L, \text{left})$ 的元素都比 $x$ 小
+3. $x \le[\text{right}, R)$ 表示区间 $[\text{right}, R)$ 的元素都不比 $x$ 小.
 
-- 如果 `arr[0] == target`, 那么 `arr[mid] >= target` 始终成立, `right` 不断的向 0 移动, 即使中间满足 `arr[right] = target`, `right` 也不会停止移动. 直到相等退出循环.
-- 如果 `arr[left] < target`, 不管 `right` 指向什么值, 只要 `left = mid + 1` 被执行且执行之前 `arr[left] == target` 不满足, 执行之后 `arr[left] == target` 满足, 那么 `left` 之后就不会移动, `right` 只能一直向 `left` 移动直到相等.
+下面我们证明属性 1 即证明 $L, R$ 满足 $[L, L) < x\land [R, R)$. 显然 $[L, L)$ 和 $[R, R)$ 为空, 因此属性 1 成立.
 
-因此, 如果数组中有多个目标值, 最后指向的位置始终是最左边的那个目标值.
+然后是属性 2. 令 $m=l+\lfloor (r-l)/2\rfloor$, 并且对于前面的循环, 始终有 $P$ 成立.
 
-现在假设数组中没有目标值, 那么初始条件 `arr[0] > target` 或 `arr[0] < target` 且数组中没有目标值.
+如果 `arr[mid] < target` 成立, 那么 $\text{left}=m+1, \text{right}=r$, 我们需要证明
 
-如果 `arr[0] > target`, `right = mid` 始终被执行, 直到返回. 因此返回的是索引 0. 而且 `arr[0]` 是大于 `target` 的最小元素.
+$$
+\begin{aligned}
+& \text{right - left} < r - l\\
+& = r - (m + 1) < r - l\\
+& = m + 1 > l\\
+& = l + \lfloor (r-l)/2\rfloor + 1 > l\\
+& = \lfloor (r-l)/2\rfloor > -1\\
+\end{aligned}
+$$
 
-如果 `arr[0] < target` 即数组中只有大于 `target` 和小于 `target` 的元素. `left` 和 `right` 都在相向移动. 那么它们最后会移动到哪呢?
+因为循环条件保证了 $r > l$, 因此, $\lfloor (r-l)/2\rfloor \ge 0 > -1$. 此外, 显然 $[L, m+1) < x$ 成立, $[r, R)$ 也成立 (前面的循环保证了它成立). 因此, $P$ 成立.
 
-假设我们在第 x 次循环时 `left == right` 并退出循环, 那么第 `x-1` 次循环时, `left < right` 且, `left` 和 `right` 分别指向小于和大于 `target` 的元素. 如果执行 `left = mid + 1`, 这意味着下列布局:
+如果 `arr[mid] >= target`, 那么 $\text{left}=l, \text{right}=m$, 我们需要证明
 
-```
-+-----+---+---+-----+
-| ... | 2 | 4 | ... |
-+-----+---+---+-----+
-        |   |
-       mid right
-```
+$$
+\begin{aligned}
+& \text{right - left} < r - l\\
+& = m - l < r - l\\
+& = m < r\\
+& = l+\lfloor (r-l)/2\rfloor < r\\
+& = \lfloor (r-l)/2\rfloor < r - l
+\end{aligned}
+$$
 
-如图, 假设我们要找 3, 最后 left 和 right 都会指向 4, 即大于 3 的最小元素的位置, 如果 4 有多个, 那么它也会找到最左边的 4.
+我们可以轻松证明最后一行成立. 另外, $[L, l)<x$ 成立, $x\le [m, R)$ 也成立. 因此 $P$ 成立. 属性 2 得证.
 
-如果执行的是 `right = mid`, 这意味着布局如下:
+下面我们证明属性 3. 令整数函数(值为整数) $t=\text{right - left}$, 显然, 每次循环都会导致 $t$ 减小, 且直到循环终止前, $t$ 都大于 0. 因此, 程序一定会终止.
 
-```
-      left
-        |
-+-----+---+---+-----+
-| ... | 2 | 4 | ... |
-+-----+---+---+-----+
-        |
-       mid
-```
+最后证明属性 4. 我们现在知道最后一次循环结束时 $P$ 成立, 在最后一次循环后 $\text{left}\ge \text{right}$ 然后退出循环. 由于 $P$ 成立, 所以 $[L, \text{left})<x\le [\text{right}, R)$ 成立. 如果 $\text{left>right}$, 那么 $P$ 就不会成立了, 所以 $\text{left}$ 一定和 $\text{right}$ 相等, 因此 $[L, \text{left})<x\le a[\text{left}]=a[\text{right}]$. 另外, $[\text{right}, R)$ 可能为空, 这意味着 $\text{right}$ 和 $R$ 相等. 此时数组中的所有元素都小于 x, 简单的返回 $\text{left}$ 即可.
 
-但是, 执行 `right = mid` 的前提是 `arr[mid] >= target`, 上图的布局又不满足这个条件, 因此 `right = mid` 不可能被执行.
-
-因此, 如果不存在目标值, 算法会找到大于它的最小元素, 这个位置也是如果插入目标值, 它将会在的位置. 如果还不存在, 返回 `arr.size()` 即尾后元素索引.
-
-总之, 版本 2 的二分搜索总是找到相同目标值的最左边那个元素, 如果不存在, 它会找到如果要插入目标值, 目标值应该在的位置, 这个位置现在保存的是大于目标值的最小元素, 如果这个位置还不存在, 返回 `arr.size()`. 同时, 我们还简单的证明了如果目标值不存在且 `arr[0] < target`, 那么最后执行的分支总是 `left = mid + 1`.
+综上, 我们知道最后 $\text{left}$ 指向的元素一定是第一个大于等于目标值的元素, 这个元素可能不存在, 那么 $\text{left}$ 指向数组的尾后元素.
 
 ## 查找最右边的元素
 
@@ -160,9 +162,18 @@ size_t binary_search_v3(const Container& arr,
 }
 ```
 
-版本 3 和版本 2 的差别是 `arr[mid] == target` 时执行的分支由 `right = mid` 改为了 `left = mid + 1`. 另外最后返回 `left - 1`.
+我们创建版本 3 的代码的不变式 $P:(\text{right}-\text{left} < r-l)\land ([L, \text{left}) \le x)\land (x <[\text{right}, R))$.
 
-版本 3 的二分搜索总是找到相同目标值的最右边那个元素, 如果不存在, 它会找到小于目标值的最大元素, 如果还不存在, 返回 `arr.size()`. 如果目标值不存在且 `arr[0] < target`, 那么最后执行的分支总是 `left = mid + 1`.
+我们可以轻松的证明属性 1, 2, 3. 需要注意的是属性 4:
+
+$$
+\begin{aligned}
+& P\land \text{left}\ge \text{right}\\
+& = [L, \text{left})\le x < a[\text{left}]=a[\text{right}]
+\end{aligned}
+$$
+
+因此, $\text{left}$ 最后指向的元素是第一个大于目标值的元素, 为了获得最后一个等于目标值的元素, 我们将 $\text{left}$ 减 1. 这个元素可能不存在, 此时仍然返回尾后元素.
 
 注意到在每次迭代中, 版本 2 和版本 3 都比版本 1 少一次 if 判断. 这使得每一次的循环更快. 相对地, 总循环数更多了.
 
@@ -170,6 +181,10 @@ size_t binary_search_v3(const Container& arr,
 
 - 总是查找大于目标值的最小元素. 这使用版本 3 的返回值再加 1 即可找到.
 - 总是查找小于目标值的最大元素. 这使用版本 2 的返回值再减 1 即可找到.
+
+## 搜索满足任意条件的元素
+
+我们知道, 版本 2 的代码总能找到大于等于目标值的第一个元素, 版本 3 的代码总能找到大于目标值的第一个元素, 现在我们可以搜索满足 `>=` 和 `>` 谓词的元素, 也就可以搜索满足 `<=` 和 `<` 谓词的元素, 通过自定义谓词, 我们可以搜索满足任意条件的元素. 许多编程语言的标准库都支持搜索自定义条件的元素的二分搜索.
 
 ## Libcxx 的实现
 
@@ -253,7 +268,7 @@ __upper_bound(_ForwardIterator __first, _ForwardIterator __last, const _Tp& __va
 }
 ```
 
-基本思想与版本 3 相同, 但是返回值不减 1.
+基本思想与版本 3 相同.
 
 ## References
 
