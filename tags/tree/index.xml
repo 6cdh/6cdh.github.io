@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>tree on 6cdh's Blog</title><link>https://6cdh.github.io/tags/tree/</link><description>Recent content in tree on 6cdh's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 26 Nov 2020 16:46:42 +0000</lastBuildDate><atom:link href="https://6cdh.github.io/tags/tree/index.xml" rel="self" type="application/rss+xml"/><item><title>二叉树的常数空间遍历</title><link>https://6cdh.github.io/posts/morris-traversal/</link><pubDate>Thu, 26 Nov 2020 16:46:42 +0000</pubDate><guid>https://6cdh.github.io/posts/morris-traversal/</guid><description>&lt;p>如果你不了解 Morris 遍历, 不使用栈(或者说额外空间)遍历二叉树, 你可能认为是不可能的. 为什么这么说? 因为在遍历时我们需要空间保存父结点或相关的信息, 如果不保存, 遍历时, 就只能下降而不能上升:&lt;/p>
+&lt;div class="highlight">&lt;pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-plaintext" data-lang="plaintext"> +---+
++-----| 0 |-----+
+| +---+ |
+| |
++---+ +---+
++--| 1 |--+ +--| 2 |--+
+| +---+ | | +---+ |
+| | | |
++---+ +---+ +---+ +---+
+| 3 | | 4 | | 5 | | 6 |
++---+ +---+ +---+ +---+
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>如图, 假设我们已经访问了结点 0 -&amp;gt; 1 -&amp;gt; 3, 因为没有保存父节点的信息, 没有办法返回到结点 1 然后继续访问结点 4, 更别说回到结点 0 并访问结点 2, 5, 6 了. 理论上, 我们需要 O(h) 空间来保存我们需要的信息, 这里 h 是树的高度. 当然, 如果每个结点内还保存了一个指向其父结点的指针或者这个树是一个单链表, 我们也可以不使用额外的空间, 但是这里谈论的并不是特例, 而是适用于所有二叉树的方法.&lt;/p>
+&lt;p>Morris 可以不使用额外的空间而遍历二叉树. 它是如何做到的呢? 显然, 它也一定需要空间来保存信息, 这些空间不来自于堆或者栈, 而是来自二叉树本身 (当然, 二叉树本身或许也是在堆或栈上的).&lt;/p></description></item></channel></rss>
