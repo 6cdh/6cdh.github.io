@@ -2,14 +2,15 @@
 title: 标准库中的字符串搜索
 date: 2020-11-21
 updated: 2020-11-21
+katex: true
 tags:
-  - C++
-  - STL
+  - c++
+  - stl
 ---
 
 给定文本 T(ext) 和模式 P(attern), 字符串搜索问题在 T 中寻找 P 出现的位置.
 
-<!-- more -->
+<!--more-->
 
 ## 朴素字符串搜索 _(Naïve string search)_
 
@@ -36,7 +37,7 @@ auto naive_match(const std::string& T, const std::string& P) {
 }
 ```
 
-假设 T 的长度为 $t$, P 的长度为 $p$. 朴素字符串搜索算法的时间复杂度最好是 $O(t + p)$. 最坏是 $O((t - p + 1)p) = O(tp)$. 空间复杂度是 $O(1)$.
+假设 T 的长度为 t, P 的长度为 p. 朴素字符串搜索算法的时间复杂度最好是 O(t + p). 最坏是 O((t - p + 1)p) = O(tp). 空间复杂度是 O(1).
 
 ## 优化的朴素字符串搜索 _(Optimized Naïve string-search algorithm)_
 
@@ -71,13 +72,13 @@ Index: 2
 size_type find(const basic_string& str, size_type pos = 0) const noexcept;
 ```
 
-作用是从 `pos` 开始搜索第一个等于 `str` 的子串的索引. 如果不存在, 返回 `std::basic_string<CharT, Traits, Allocator>::npos`, `npos` 的定义实际上是
+作用是从 pos 开始搜索第一个等于 str 的子串的索引. 如果不存在, 返回 `std::basic_string<CharT, Traits, Allocator>::npos`, npos 的定义实际上是
 
 ```c++
 static const size_type npos = -1;
 ```
 
-libcxx 中 `find` 的实现:
+libcxx 中 find 的实现:
 
 ```c++
 // llvm-project/libcxx/include/string
@@ -176,7 +177,7 @@ __search_substring(const _CharT *__first1, const _CharT *__last1,
 }
 ```
 
-显然, `__search_substring` 是真正字符串搜索逻辑发生的函数. `first1` 和 `last1` 分别指向 T 的首尾, `first2` 和 `last2` 分别指向 P 的首尾, P 的第一个字符为 `__f2`. 每次在区间 `[first1, last1 - len(P)]` 内搜索 `__f2` 出现的位置, 并令 `first1` 指向该位置. 然后比较 `first1` 和 `first2` 之后的字符. 匹配则返回 `first1`, 否则递增 `first1`, 继续搜索.
+显然, `__search_substring` 是真正字符串搜索逻辑发生的函数. first1 和 last1 分别指向 T 的首尾, first2 和 last2 分别指向 P 的首尾, P 的第一个字符为 `__f2`. 每次在区间 `[first1, last1 - len(P)]` 内搜索 `__f2` 出现的位置, 并令 first1 指向该位置. 然后比较 first1 和 first2 之后的字符. 匹配则返回 first1, 否则递增 first1, 继续搜索.
 
 `__search_substring` 调用了两个函数: `_Traits::find` 和 `_Traits::compare`. 它们的源码如下:
 
@@ -291,13 +292,13 @@ auto match_std(const std::string& T, const std::string& P) {
 }
 ```
 
-对 `memchr` 和 `memcmp` 的调用大大加快了代码的速度. 优化的朴素字符串搜索时间复杂度为 $O(tp)$.
+对 memchr 和 memcmp 的调用大大加快了代码的速度. 优化的朴素字符串搜索时间复杂度为 $O(tp)$.
 
 libcxx 的相关讨论给出了 [benchmark](https://reviews.llvm.org/D27068) 的结果.
 
 ## strstr/两路字符串搜索 _(Two-way string-search algorithm)_
 
-glibc 中的 `strstr` 使用了两路字符串搜索. 需要 $O(p)$ 时间预处理, 执行时间是 $O(t + p)$, 消耗 $O(1)$ 的空间.
+glibc 中的 strstr 使用了两路字符串搜索. 需要 O(p) 时间预处理, 执行时间是 O(t + p), 消耗 O(1) 的空间.
 
 由于代码很长很复杂, 这里不再给出源码. 可以点击[链接](https://github.com/bminor/glibc/blob/master/string/strstr.c#L76)进入 Github 查看.
 

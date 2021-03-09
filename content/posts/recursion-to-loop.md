@@ -2,28 +2,30 @@
 title: 递归转换为迭代的通用技术
 date: 2020-10-07 11:54:55
 updated: 2020-10-11
-mathjax: true
+katex: true
 tags:
-- C++
-- Recursion
-- Iteration
+  - c++
+  - recursion
+  - iteration
 ---
 
 递归 _(Recursion)_ 和迭代 _(Iteration)_ 是等价的, 任何的递归算法都可以转换成循环, 任何迭代都可以转换成递归. 如果说到将递归转换成迭代的技术, 两种常见的方法是尾递归和模拟运行时栈.
 
-<!-- more -->
+<!--more-->
 
 ## 尾递归 _(Tail recursive)_
 
 一个函数最后执行的操作是递归调用自身, 这种调用称为尾递归调用. 尾递归消除技术可以对尾递归的代码优化将其转换成生成迭代.
 
 一个阶乘 _(factorial)_ 的例子:
+
 $$
 n! = \begin{cases}
-1 & n = 0\\
+1 & n = 0\cr
 n\cdot (n-1)! & n > 0
 \end{cases}
 $$
+
 最直观的 C++ 代码如下, 为了方便, 称为版本 1 (v1).
 
 ```c++
@@ -36,9 +38,9 @@ T factorial_v1(T n) {
 }
 ```
 
-注意 `factorial_v1` 虽然末尾进行了递归, 但不是尾递归, 因为它最后执行的操作是乘法而不是递归调用.
+注意 factorial_v1 虽然末尾进行了递归, 但不是尾递归, 因为它最后执行的操作是乘法而不是递归调用.
 
-对于 `factorial_v1(6)` 的递归过程如下:
+对于函数调用 factorial_v1(6) 的递归过程如下:
 
 ```scheme
 factorial_v1(6)
@@ -59,7 +61,7 @@ factorial_v1(6)
 
 这个递归过程先扩张后收缩. 扩张发生在构建延迟求值操作链的过程中, 随着延迟求值操作链越来越长, 运行时栈保存的状态也越来越多. 当延迟求值操作链达到最长时, 扩张结束. 然后发生收缩, 收缩时, 实际求值延迟求值的操作链, 这时用到了运行时栈保存的状态, 随着不断的求值, 运行时栈需要保存的状态减少, 求值操作链也越来越短, 最后得到结果. 延迟操作链随着 $n$ 的增长而线性增长, 这称为线性递归.
 
-所以 `factorial_v1` 所需时间是 $O(n)$, 递归保存状态所需空间是 $O(n)$. 但是理想的迭代应该使用 $O(1)$ 的空间.
+所以 factorial_v1 所需时间是 O(n), 递归保存状态所需空间是 O(n). 但是理想的迭代应该使用 O(1) 的空间.
 
 为了获得尾递归的版本, 代码修改如下:
 
@@ -78,7 +80,7 @@ T factorial(T n) {
 }
 ```
 
-现在的 `factorial_impl` 接收两个参数, 将最后本该需要的乘法转换到了参数上, 且是尾递归. 这很容易被编译器优化成等价的尾部 goto:
+现在的 factorial_impl 接收两个参数, 将最后本该需要的乘法转换到了参数上, 且是尾递归. 这很容易被编译器优化成等价的尾部 goto:
 
 ```c++
 template <typename T>
@@ -93,7 +95,7 @@ start:
 }
 ```
 
-显然这就变成了迭代版本. 因此虽然表面上 `factorial_impl` 的代码使用了递归, 但是它实际上会被优化成迭代. 如果你对循环有特殊偏好, 也可以很容易的手动把 `factorial_imple_optimized` 转换成一个循环结构.
+显然这就变成了迭代版本. 因此虽然表面上 factorial_impl 的代码使用了递归, 但是它实际上会被优化成迭代. 如果你对循环有特殊偏好, 也可以很容易的手动把 factorial_impl_optimized 转换成一个循环结构.
 
 ```c++
 template <typename T>
@@ -166,21 +168,17 @@ T func() {
 
 ## 迭代版本的二叉树遍历
 
-总之, 已经得到了大致的思路, 下面对二叉树的前序遍历算法应用这个技术. 树的定义如下:
+总之, 已经得到了大致的思路, 下面对二叉树的前序遍历算法应用这个技术. 树结点的定义如下:
 
 ```c++
-class Tree {
-    struct TreeNode {
-        int val = 0;
-        TreeNode *left = nullptr;
-        TreeNode *right = nullptr;
-    };
-
-    TreeNode *m_root;
+struct TreeNode {
+    int val = 0;
+    TreeNode *left = nullptr;
+    TreeNode *right = nullptr;
 };
 ```
 
-为了方便, 结点内的元素设定为 `int`.
+为了方便, 结点内的元素类型设定为 int.
 
 递归的版本:
 
@@ -204,7 +202,7 @@ vector<int> preorder_traversal(TreeNode *root) {
 }
 ```
 
-`preorder_recur` 中每个栈帧需要保存的状态是 root 和代码块编号. 因此栈帧声明如下:
+preorder_recur 中每个栈帧需要保存的状态是 root 和代码块编号. 因此栈帧声明如下:
 
 ```c++
 struct Frame {
@@ -251,7 +249,7 @@ vector<int> preorder_iter(TreeNode *root) {
 }
 ```
 
-经过测试, 现在它可以正常工作了! 不过这么多的 `switch` 和 `case` 还是臃肿了点. 为了优化代码, 使用一个优化准则: 两个或多个连续的递归调用可以以相反的顺序一次性入栈. 这样就得到了第一个优化版本的代码:
+经过测试, 现在它可以正常工作了! 不过这么多的 switch 和 case 还是臃肿了点. 为了优化代码, 使用一个优化准则: 两个或多个连续的递归调用可以以相反的顺序一次性入栈. 这样就得到了第一个优化版本的代码:
 
 ```c++
 vector<int> preorder_iter_v1(TreeNode *root) {
@@ -286,7 +284,7 @@ vector<int> preorder_iter_v1(TreeNode *root) {
 }
 ```
 
-注意到只要 `now_frame.node != nullptr` 且 `now_frame.codeblock == 0`, 就会 `push` 两个子节点, 否则从栈中取出 `now_frame.node`. 代码优化如下:
+注意到只要 `now_frame.node != nullptr` 且 `now_frame.codeblock == 0`, 就会 push 两个子节点, 否则从栈中取出 `now_frame.node`. 代码优化如下:
 
 ```c++
 vector<int> preorder_iter_v2(TreeNode *root) {
@@ -314,7 +312,7 @@ vector<int> preorder_iter_v2(TreeNode *root) {
 }
 ```
 
-这样每个帧就剩下了两个状态, 一个状态是初始状态, 初始状态进入 `if` 分支并执行一些操作. 另一个状态是终止状态, 终止状态在遍历完该结点的所有子节点后, 此时将该结点也从栈中弹出. 如下:
+这样每个帧就剩下了两个状态, 一个状态是初始状态, 初始状态进入 if 分支并执行一些操作. 另一个状态是终止状态, 终止状态在遍历完该结点的所有子节点后, 此时将该结点也从栈中弹出. 如下:
 
 ```c++
 void preorder_recur(TreeNode *root, vector<int> &vi) {
@@ -328,7 +326,7 @@ void preorder_recur(TreeNode *root, vector<int> &vi) {
 }
 ```
 
-但是其实弹出 `root` 的过程不一定得在遍历完它的所有子节点之后, 可以将它放在开头:
+但是其实弹出 root 的过程不一定得在遍历完它的所有子节点之后, 可以将它放在开头:
 
 ```c++
 void preorder_recur(TreeNode *root, vector<int> &vi) {
@@ -401,7 +399,7 @@ vector<int> inorder_iter_v1(TreeNode *root) {
 
 似乎很难再优化了.
 
-注意到当栈收缩时, 栈中所有元素的 `left_has_traveled` 都变成 `true`. 即当栈收缩时, 将结点 `pop` 的同时 `push` 右边结点. 可以进一步优化如下.
+注意到当栈收缩时, 栈中所有元素的 left_has_traveled 都变成 true. 即当栈收缩时, 将结点 pop 的同时 push 右边结点. 可以进一步优化如下.
 
 ```c++
 vector<int> inorder_iter_v2(TreeNode *root) {
@@ -421,31 +419,6 @@ vector<int> inorder_iter_v2(TreeNode *root) {
                 runtime_stack.pop();
                 runtime_stack.push(tmp->right);
             }
-        }
-    }
-    return ret;
-}
-```
-
-由于个人能力有限, 无法进一步优化了. 理想的中序遍历的循环版本代码应该如下:
-
-```c++
-vector<int> inorder_loop(TreeNode *root) {
-    stack<TreeNode *> runtime_stack;
-
-    TreeNode *probe = root;
-    vector<int> ret;
-    while (true) {
-        if (probe != nullptr) {
-            runtime_stack.push(probe);
-            probe = probe->left;
-        } else if (!runtime_stack.empty()) {
-            probe = runtime_stack.top();
-            runtime_stack.pop();
-            ret.push_back(probe->val);
-            probe = probe->right;
-        } else {
-            break;
         }
     }
     return ret;
@@ -479,32 +452,6 @@ vector<int> postorder_iter(TreeNode *root) {
             ret.push_back(now_frame.node->val);
             runtime_stack.pop();
         }
-    }
-    return ret;
-}
-```
-
-因为个人能力有限, 不会进一步优化了. 一个理想的简洁的后序遍历的循环版本如下:
-
-```c++
-vector<int> postorder_iter(TreeNode *root) {
-    stack<TreeNode *> runtime_stack;
-    runtime_stack.push(root);
-
-    stack<int> ret_stack;
-    while (!runtime_stack.empty()) {
-        TreeNode *now_frame = runtime_stack.top();
-        runtime_stack.pop();
-        if (now_frame != nullptr) {
-            ret_stack.push(now_frame->val);
-            runtime_stack.push({now_frame->left});
-            runtime_stack.push({now_frame->right});
-        }
-    }
-    vector<int> ret;
-    while (!ret_stack.empty()) {
-        ret.push_back(ret_stack.top());
-        ret_stack.pop();
     }
     return ret;
 }
@@ -594,7 +541,7 @@ void quick_sort(Container &arr) {
 }
 ```
 
-观察到其模式类似于二叉树的前序遍历, 直接把二叉树的前序遍历模板套上即可, 或者可以自己再从初始的 `switch` 和 `case` 版本开始优化.
+观察到其模式类似于二叉树的前序遍历, 直接把二叉树的前序遍历模板套上即可, 或者可以自己再从初始的 switch 和 case 版本开始优化.
 
 ```c++
 template <typename Container>

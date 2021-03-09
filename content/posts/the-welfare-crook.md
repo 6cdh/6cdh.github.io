@@ -2,9 +2,10 @@
 title: The Welfare Crook
 date: 2021-01-21 20:52:12
 updated: 2021-01-21
+katex: true
 tags:
-  - Algorithm
-  - Program verification
+  - algorithm
+  - program verification
 ---
 
 题目 The Welfare Crook, 出自 "Science of Programming":
@@ -13,21 +14,21 @@ tags:
 
 这个题目看起来不太容易, 而且可能需要几十行代码, 如果不使用形式化方法的话.
 
-<!-- More -->
+<!-- more -->
 
-假设这三个列表分别表示为 $f, g, h$. 最后找到的位置是 $\text{iv, jv, kv}$. 这样, 我们有了后置条件:
+假设这三个列表分别表示为 f, g, h. 最后找到的位置是 iv, jv, kv. 这样, 我们有了后置条件:
 
 $$
 R: 0\le \text{iv}\land 0\le \text{jv}\land 0\le \text{kv}\land f[\text{iv}] = g[\text{jv}] = h[\text{kv}]
 $$
 
-为了编写循环, 使用 $i, j, k$ 替换 $\text{iv, jv, kv}$, 并弱化谓词, 得到不变式:
+为了编写循环, 使用 i, j, k 替换 iv, jv, kv, 并弱化谓词, 得到不变式:
 
 $$
 P: 0\le i\le \text{iv}\land 0\le j\le \text{jv}\land 0\le k\le \text{kv}
 $$
 
-显然, 我们需要迭代三个变量 $i, j, k$, 在满足某些情况时, 递增某个变量. 最简单的递增方法就是递增 1:
+显然, 我们需要迭代三个变量 i, j, k, 在满足某些情况时, 递增某个变量. 最简单的递增方法就是递增 1:
 
 ```python
 def the_welfare_crook(f, g, h) -> str:
@@ -42,24 +43,24 @@ def the_welfare_crook(f, g, h) -> str:
     return f[i]
 ```
 
-接下来需要确定 `IF1, IF2, IF3`. 首先看看 `IF1`: (这里使用了 predicate transformer 来推导 `IF1` 的最弱形式)
+接下来需要确定 IF1, IF2, IF3. 首先看看 IF1: (这里使用了 predicate transformer 来推导 IF1 的最弱形式)
 
 $$
 \begin{aligned}
-\text{IF1} & = \text{wp}("i := i + 1", P)\\
-& = 0\le i+1\le \text{iv}\land 0\le j\le \text{jv}\land 0\le k\le \text{kv}\\
-& = 0\le i + 1\le \text{iv}\\
+\text{IF1} & = \text{wp}("i := i + 1", P)\cr
+& = 0\le i+1\le \text{iv}\land 0\le j\le \text{jv}\land 0\le k\le \text{kv}\cr
+& = 0\le i + 1\le \text{iv}\cr
 & = i < \text{iv}
 \end{aligned}
 $$
 
-所以只要满足 $i < \text{iv}$ 即可递增 $i$. 问题在于 $\text{iv}$ 就是我们想要找到的结果, 现在是未知的. 我们可以换个思路, 现在已知的有 $i, j, k, f[i], g[j], h[k]$, 只要 $f[i] < g[j]\lor f[i] < h[k]$ 就一定意味着 $i < \text{iv}$, 反之则不一定. 因此
+所以只要满足 i < iv 即可递增 i. 问题在于 iv 就是我们想要找到的结果, 现在是未知的. 我们可以换个思路, 现在已知的有 i, j, k, f[i], g[j], h[k], 只要 f[i] < g[j] $\lor$ f[i] < h[k] 就一定意味着 i < iv, 反之则不一定. 因此
 
 $$
 \text{IF1} = f[i] < g[j]\land f[i] < h[k]
 $$
 
-同理, 推导出 `IF2` 和 `IF3`:
+同理, 推导出 IF2 和 IF3:
 
 ```python
 def the_welfare_crook(f, g, h) -> str:
@@ -74,27 +75,27 @@ def the_welfare_crook(f, g, h) -> str:
     return f[i]
 ```
 
-这样不变式得到了维护. 下面需要证明循环会终止. 令整数函数 $t=\text{iv}-i+\text{jv}-j+\text{kv}-k$, 显然 $t$ 每次循环都会减小, 且 $t$ 有下界 0. 因此循环一定会终止.
+这样不变式得到了维护. 下面需要证明循环会终止. 令整数函数 t = iv - i + jv - j + kv - k, 显然 t 每次循环都会减小, 且 t 有下界 0. 因此循环一定会终止.
 
-下面证明如果循环终止, $R$ 成立. 令循环条件为 BB, 首先需要证明 BB 是循环中各种条件的析取 (因为 IF1, IF2, IF3 需要覆盖 BB 成立的条件下的所有可能).
+下面证明如果循环终止, R 成立. 令循环条件为 BB, 首先需要证明 BB 是循环中各种条件的析取 (因为 IF1, IF2, IF3 需要覆盖 BB 成立的条件下的所有可能).
 
 $$
 \begin{aligned}
-\text{IF1}\lor \text{IF2}\lor \text{IF3} & = f[i] < g[j] \lor f[i] < h[k]\\
-& \lor g[j] < f[i] \lor g[j] < h[k]\\
-& \lor h[k] < f[i] \lor h[k] < g[j]\\
-& = f[i] \not= g[j]\lor f[i] \not= h[k]\\
+\text{IF1}\lor \text{IF2}\lor \text{IF3} & = f[i] < g[j] \lor f[i] < h[k]\cr
+& \lor g[j] < f[i] \lor g[j] < h[k]\cr
+& \lor h[k] < f[i] \lor h[k] < g[j]\cr
+& = f[i] \not= g[j]\lor f[i] \not= h[k]\cr
 & = \text{BB}
 \end{aligned}
 $$
 
-另外, 需要证明 $P\land \neg \text{BB}\Rightarrow R$:
+另外, 需要证明 P $\land \neg $ BB $\Rightarrow$ R:
 
 $$
 \begin{aligned}
-& P\land \neg \text{BB}\\
-& = P\land \neg (f[i]\not= g[j]\lor f[i]\not= h[k])\\
-& = P\land f[i]=g[j]=h[k]\\
+& P\land \neg \text{BB}\cr
+& = P\land \neg (f[i]\not= g[j]\lor f[i]\not= h[k])\cr
+& = P\land f[i]=g[j]=h[k]\cr
 & = R
 \end{aligned}
 $$

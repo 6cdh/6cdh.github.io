@@ -3,13 +3,13 @@ title: 模板特化与实例化
 date: 2021-01-16 10:42:26
 updated: 2021-01-16
 tags:
-  - C++
-  - Template Metaprogramming
+  - c++
+  - template metaprogramming
 ---
 
 模板特化和实例化有时挺让人迷惑.
 
-<!-- More -->
+<!--more-->
 
 ## 模板特化与实例化的语法
 
@@ -22,7 +22,7 @@ class A {};
 
 模板的特化分为全特化和部分特化. 模板的显式 (全) 特化 _(explicit (full) specialization)_ 使用形如
 
-```c++
+```plaintext
 template <> declaration
 ```
 
@@ -35,7 +35,7 @@ class A<int> {};
 
 模板的部分特化 _(partial specialization)_ 使用形如
 
-```c++
+```plaintext
 template <parameter-list>
 class-key class-head-name <argument-list> declaration
 ```
@@ -49,7 +49,7 @@ class A<T*> {};
 
 模板的实例化分为显式实例化和隐式实例化. 显式实例化 _(explicit instantiation)_ 也有特殊的语法:
 
-```c++
+```plaintext
 template class-key template-name <argument-list>;
 ```
 
@@ -145,9 +145,9 @@ int fb() {
 }
 ```
 
-在 `a.h` 中, 我们定义了一个模板 `fac`, 然后在 `a.cc` 和 `b.cc` 中分别使用 `fac<10000>`, `fac<10000>` 会在这两个翻译单元中分别实例化一次, 每一次都会花费很长时间. 另外, 我们添加了一些由宏 `EXPLICIT_INSTANTIATION` 控制的显式实例化的代码, 在 `b.cc` 中对 `fac<10000>` 进行显式实例化, 在 `a.cc` 中使用 `extern` 声明 `fac<10000>` 的外部链接. 这样, 在定义了 `EXPLICIT_INSTANTIATION` 宏再编译时, 我们期望模板仅实例化一次并节省大量编译时间.
+在 a.h 中, 我们定义了一个模板 fac, 然后在 a.cc 和 b.cc 中分别使用 fac<10000>, fac<10000> 会在这两个翻译单元中分别实例化一次, 每一次都会花费很长时间. 另外, 我们添加了一些由宏 `EXPLICIT_INSTANTIATION` 控制的显式实例化的代码, 在 b.cc 中对 fac<10000> 进行显式实例化, 在 a.cc 中使用 extern 声明 fac<10000> 的外部链接. 这样, 在定义了 `EXPLICIT_INSTANTIATION` 宏再编译时, 我们期望模板仅实例化一次并节省大量编译时间.
 
-我们首先看看不使用显式实例化即实例化两次 `fac<10000>` 的编译时间:
+我们首先看看不使用显式实例化即实例化两次 fac<10000> 的编译时间:
 
 ```bash
 $time clang++ a.cc b.cc -ftemplate-depth=10000

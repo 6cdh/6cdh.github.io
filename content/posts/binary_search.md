@@ -1,10 +1,11 @@
 ---
 title: 二分搜索及其变种
 date: 2020-09-23 02:52:13
-updated: 2021-01-17
+katex: true
 tags:
-  - C++
-  - Binary search
+  - c++
+  - binary search
+updated: 2021-01-17
 ---
 
 二分搜索 _(binary search)_ 也称折半搜索 _(half-interval search)_, 用于在有序数组上搜索给定值的位置. 这是一个常见的搜索算法, 似乎没什么难度. 然而, 在解决 [Leetcode 35 (Search Insert Position)](https://leetcode.com/problems/search-insert-position/) 时, 我意识到对二分搜索及其变种的理解还不够, 因此记录一下.
@@ -106,30 +107,30 @@ size_t binary_search_v2(const Container& arr,
 
 下面我们证明属性 1 即证明 $L, R$ 满足 $[L, L) < x\land [R, R)$. 显然 $[L, L)$ 和 $[R, R)$ 为空, 因此属性 1 成立.
 
-然后是属性 2. 令 $m=l+\lfloor (r-l)/2\rfloor$, 并且对于前面的循环, 始终有 $P$ 成立.
+然后是属性 2. 令 $m=l+\lfloor (r-l)/2 \rfloor$, 并且对于前面的循环, 始终有 $P$ 成立.
 
-如果 `arr[mid] < target` 成立, 那么 $\text{left}=m+1, \text{right}=r$, 我们需要证明
+如果 $\text{arr[mid] < target}$, 那么 $\text{left}=m+1, \text{right}=r$, 我们需要证明
 
 $$
 \begin{aligned}
-& \text{right - left} < r - l\\
-& = r - (m + 1) < r - l\\
-& = m + 1 > l\\
-& = l + \lfloor (r-l)/2\rfloor + 1 > l\\
-& = \lfloor (r-l)/2\rfloor > -1\\
+& \text{right - left} < r - l\cr
+& = r - (m + 1) < r - l\cr
+& = m + 1 > l\cr
+& = l + \lfloor (r-l)/2 \rfloor + 1 > l\cr
+& = \lfloor (r-l)/2 \rfloor > -1\cr
 \end{aligned}
 $$
 
 因为循环条件保证了 $r > l$, 因此, $\lfloor (r-l)/2\rfloor \ge 0 > -1$. 此外, 显然 $[L, m+1) < x$ 成立, $[r, R)$ 也成立 (前面的循环保证了它成立). 因此, $P$ 成立.
 
-如果 `arr[mid] >= target`, 那么 $\text{left}=l, \text{right}=m$, 我们需要证明
+如果 $\text{arr[mid]} \ge \text{target}$, 那么 $\text{left}=l, \text{right}=m$, 我们需要证明
 
 $$
 \begin{aligned}
-& \text{right - left} < r - l\\
-& = m - l < r - l\\
-& = m < r\\
-& = l+\lfloor (r-l)/2\rfloor < r\\
+& \text{right - left} < r - l\cr
+& = m - l < r - l\cr
+& = m < r\cr
+& = l+\lfloor (r-l)/2\rfloor < r\cr
 & = \lfloor (r-l)/2\rfloor < r - l
 \end{aligned}
 $$
@@ -168,7 +169,7 @@ size_t binary_search_v3(const Container& arr,
 
 $$
 \begin{aligned}
-& P\land \text{left}\ge \text{right}\\
+& P \land \text{left}\ge \text{right}\cr
 & = [L, \text{left})\le x < a[\text{left}]=a[\text{right}]
 \end{aligned}
 $$
@@ -184,7 +185,7 @@ $$
 
 ## 搜索满足任意条件的元素
 
-我们知道, 版本 2 的代码总能找到大于等于目标值的第一个元素, 版本 3 的代码总能找到大于目标值的第一个元素, 现在我们可以搜索满足 `>=` 和 `>` 谓词的元素, 也就可以搜索满足 `<=` 和 `<` 谓词的元素, 通过自定义谓词, 我们可以搜索满足任意条件的元素. 许多编程语言的标准库都支持搜索自定义条件的元素的二分搜索.
+我们知道, 版本 2 的代码总能找到大于等于目标值的第一个元素, 版本 3 的代码总能找到大于目标值的第一个元素, 现在我们可以搜索满足 >= 和 > 谓词的元素, 也就可以搜索满足 <= 和 < 谓词的元素, 通过自定义谓词, 我们可以搜索满足任意条件的元素. 许多编程语言的标准库都支持搜索自定义条件的元素的二分搜索.
 
 ## Libcxx 的实现
 
