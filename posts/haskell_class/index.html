@@ -1,0 +1,272 @@
+<!doctype html><html xmlns=http://www.w3.org/1999/xhtml lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Hierarchy of Haskell | 6cdh's Blog</title><meta property="og:title" content="Hierarchy of Haskell - 6cdh's Blog"><meta property="og:description" content="The standard Haskell libraries has a number of type classes. To be a expert of Haskell
+requires us to understand each type class and its relationship to other type classes.
+Here I made a list of typeclasses and their hierarchy structure."><meta property="og:url" content="https://6cdh.github.io/posts/haskell_class/"><meta property="og:site_name" content="6cdh's Blog"><meta property="og:type" content="article"><meta property="og:image" content="https://www.gravatar.com/avatar/b8cddc4add92aa9aa4ad41498604c028?s=256"><meta property="article:section" content="Posts"><meta property="article:tag" content="haskell"><meta property="article:published_time" content="2021-03-14T22:02:49+08:00"><meta property="article:modified_time" content="2021-03-14T22:02:49+08:00"><meta name=twitter:card content="summary"><meta name=twitter:site content="@"><meta name=twitter:creator content="@"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://6cdh.github.io/custom.css><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel=stylesheet><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://6cdh.github.io/posts/haskell_class/><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"></head><body><section class=section><div class=container><nav id=nav-main class=nav><div id=nav-name class=nav-left><a id=nav-anchor class=nav-item href=https://6cdh.github.io/><h1 id=nav-heading class="title is-4">6cdh's Blog</h1></a></div><div class=nav-right><nav id=nav-items class="nav-item level is-mobile"><a class=level-item aria-label=github href=https://github.com/6cdh target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:cd6cdh@gmail.com target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></i></span></a></nav></div></nav><nav class=nav></nav></div><script src=/js/navicon-shift.js></script></section><section class=section><div class=container><div class="subtitle tags is-6 is-pulled-right"><a class="subtitle is-6" href=/tags/haskell/>#haskell</a></div><h2 class="subtitle is-6">March 14, 2021</h2><h1 class=title>Hierarchy of Haskell</h1><div class=content><p>The standard Haskell libraries has a number of type classes. To be a expert of Haskell
+requires us to understand each type class and its relationship to other type classes.</p><p>Here I made a list of typeclasses and their hierarchy structure.</p><h2 id=typeclasses>Typeclasses</h2><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-haskell data-lang=haskell><span style=color:#888;font-style:italic>-- The &#39;Eq&#39; class defines equality (&#39;==&#39;) and inequality (&#39;/=&#39;).</span>
+<span style=color:#888;font-style:italic>-- All the basic datatypes exported by the &#34;Prelude&#34; are instances of &#39;Eq&#39;,</span>
+<span style=color:#888;font-style:italic>-- and &#39;Eq&#39; may be derived for any datatype whose constituents are also</span>
+<span style=color:#888;font-style:italic>-- instances of &#39;Eq&#39;.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Eq</span> a <span style=color:#2838b0>where</span>
+  <span style=color:#888>(</span><span style=color:#666>==</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+  <span style=color:#888>(</span><span style=color:#666>/=</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+
+<span style=color:#888;font-style:italic>-- The &#39;Ord&#39; class is used for totally ordered datatypes.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Eq</span> a <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Ord</span> a <span style=color:#2838b0>where</span>
+  compare <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Ordering</span>
+  <span style=color:#888>(</span><span style=color:#666>&lt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+  <span style=color:#888>(</span><span style=color:#666>&lt;=</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+  <span style=color:#888>(</span><span style=color:#666>&gt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+  <span style=color:#888>(</span><span style=color:#666>&gt;=</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span>
+  max <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  min <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+
+<span style=color:#888;font-style:italic>-- The `Num` class is basic numeric class.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Num</span> a <span style=color:#2838b0>where</span>
+  <span style=color:#888>(</span><span style=color:#666>+</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#888>(</span><span style=color:#666>-</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#888>(</span><span style=color:#666>*</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  negate <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a   <span style=color:#888;font-style:italic>-- Unary negation.</span>
+  abs <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a      <span style=color:#888;font-style:italic>-- Absolute value.</span>
+  signum <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a   <span style=color:#888;font-style:italic>-- Sign of a number. For real numbers, the &#39;signum&#39; is</span>
+                     <span style=color:#888;font-style:italic>-- either -1 (negative), 0 (zero) or 1 (positive).</span>
+  fromInteger <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integer</span> <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Conversion from an &#39;Integer&#39;.</span>
+
+<span style=color:#888;font-style:italic>-- The `Show` is a specialised variant of &#39;showsPrec&#39;, using precedence context</span>
+<span style=color:#888;font-style:italic>-- zero, and returning an ordinary &#39;String&#39;.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Show</span> a <span style=color:#2838b0>where</span>
+  <span style=color:#666>...</span>
+  show <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>String</span>
+  <span style=color:#666>...</span>
+
+<span style=color:#888;font-style:italic>-- The `Read` class parsing of &#39;String&#39;s, producing values.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Read</span> a <span style=color:#2838b0>where</span>
+  readsPrec <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>ReadS</span> a <span style=color:#888;font-style:italic>-- attempts to parse a value from the front of</span>
+                              <span style=color:#888;font-style:italic>-- the string, returning a list of (parsed</span>
+                              <span style=color:#888;font-style:italic>-- value, remaining string) pairs.  If there is no</span>
+                              <span style=color:#888;font-style:italic>-- successful parse, the returned list is empty.</span>
+  readList <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>ReadS</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- The method &#39;readList&#39; is provided to allow the</span>
+                        <span style=color:#888;font-style:italic>-- programmer to give a specialised way of parsing</span>
+                        <span style=color:#888;font-style:italic>-- lists of values.</span>
+
+<span style=color:#888;font-style:italic>-- The &#39;Bounded&#39; class is used to name the upper and lower limits of a</span>
+<span style=color:#888;font-style:italic>-- type.  &#39;Ord&#39; is not a superclass of &#39;Bounded&#39; since types that are not</span>
+<span style=color:#888;font-style:italic>-- totally ordered may also have upper and lower bounds.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Bounded</span> a <span style=color:#2838b0>where</span>
+  minBound <span style=color:#a848a8>::</span> a
+  maxBound <span style=color:#a848a8>::</span> a
+
+<span style=color:#888;font-style:italic>-- Class &#39;Enum&#39; defines operations on sequentially ordered types.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Enum</span> a <span style=color:#2838b0>where</span>
+  succ <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- the successor of a value. For numeric types,</span>
+                 <span style=color:#888;font-style:italic>-- &#39;succ&#39; adds 1.</span>
+  pred <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- the predecessor of a value. For numeric types,</span>
+                 <span style=color:#888;font-style:italic>-- &#39;pred&#39; subtracts 1.</span>
+  toEnum <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#a848a8>-&gt;</span> a   <span style=color:#888;font-style:italic>-- Convert from an &#39;Int&#39;.</span>
+  fromEnum <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#888;font-style:italic>-- Convert to an &#39;Int&#39;.</span>
+  enumFrom <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- Used in Haskell&#39;s translation of [n..] with [n..] = enumFrom n</span>
+  enumFromThen <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- Used in Haskell&#39;s translation of [n,n&#39;..]</span>
+                                <span style=color:#888;font-style:italic>-- with [n,n&#39;..] = enumFromThen n n&#39;</span>
+  enumFromTo <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- Used in Haskell&#39;s translation of [n..m] with</span>
+                              <span style=color:#888;font-style:italic>-- [n..m] = enumFromTo n m</span>
+  enumFromThenTo <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- Used in Haskell&#39;s translation of [n,n&#39;..m] with</span>
+                                       <span style=color:#888;font-style:italic>-- [n,n&#39;..m] = enumFromThenTo n n&#39; m</span>
+
+<span style=color:#2838b0>class</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>Num</span> a<span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Ord</span> a<span style=color:#888>)</span> <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Real</span> a <span style=color:#2838b0>where</span>
+  toRational <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Rational</span> <span style=color:#888;font-style:italic>-- the rational equivalent of its real argument</span>
+                              <span style=color:#888;font-style:italic>-- with full precision</span>
+
+<span style=color:#888;font-style:italic>-- Arbitrary-precision rational numbers, represented as a ratio of</span>
+<span style=color:#888;font-style:italic>-- two &#39;Integer&#39; values.  A rational number may be constructed using</span>
+<span style=color:#888;font-style:italic>-- the &#39;%&#39; operator.</span>
+<span style=color:#2838b0>type</span> <span style=color:#2838b0;font-style:italic>Rational</span> <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Real</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Ratio</span> <span style=color:#2838b0;font-style:italic>Integer</span>
+
+<span style=color:#888;font-style:italic>-- Fractional numbers, supporting real division.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Num</span> a <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Fractional</span> a <span style=color:#2838b0>where</span>
+  <span style=color:#888>(</span><span style=color:#666>/</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Fractional division.</span>
+  recip <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a    <span style=color:#888;font-style:italic>-- Reciprocal fraction.</span>
+  fromRational <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Rational</span> <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Conversion from a &#39;Rational&#39; (that is &#39;Ratio&#39; &#39;Integer&#39;).</span>
+
+<span style=color:#888;font-style:italic>-- Integral numbers, supporting integer division.</span>
+<span style=color:#2838b0>class</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>Real</span> a<span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Enum</span> a<span style=color:#888>)</span> <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Integral</span> a <span style=color:#2838b0>where</span>
+  quot <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- integer division truncated toward zero</span>
+  rem <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a  <span style=color:#888;font-style:italic>-- integer remainder, satisfying (x `quot` y)*y + (x `rem` y) == x</span>
+  div <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a  <span style=color:#888;font-style:italic>-- integer division truncated toward negative infinity</span>
+  mod <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a  <span style=color:#888;font-style:italic>-- integer modulus, satisfying (x `div` y)*y + (x `mod` y) == x</span>
+  quotRem <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span>a<span style=color:#888>,</span> a<span style=color:#888>)</span> <span style=color:#888;font-style:italic>-- simultaneous &#39;quot&#39; and &#39;rem&#39;</span>
+  divMod <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span>a<span style=color:#888>,</span> a<span style=color:#888>)</span>  <span style=color:#888;font-style:italic>-- simultaneous &#39;div&#39; and &#39;mod&#39;</span>
+  toInteger <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Integer</span>   <span style=color:#888;font-style:italic>-- conversion to &#39;Integer&#39;</span>
+
+<span style=color:#888;font-style:italic>-- Extracting components of fractions.</span>
+<span style=color:#2838b0>class</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>Real</span> a<span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Fractional</span> a<span style=color:#888>)</span> <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>RealFrac</span> a <span style=color:#2838b0>where</span>
+  properFraction <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span>b<span style=color:#888>,</span> a<span style=color:#888>)</span> <span style=color:#888;font-style:italic>-- takes a real fractional number x</span>
+                                              <span style=color:#888;font-style:italic>-- and returns a pair (n,f) such</span>
+                                              <span style=color:#888;font-style:italic>-- that x = n+f, and n is an integral</span>
+                                              <span style=color:#888;font-style:italic>-- number with the same sign as x, f</span>
+                                              <span style=color:#888;font-style:italic>-- is a fraction with the same type</span>
+                                              <span style=color:#888;font-style:italic>-- and sign as x, and with absolute</span>
+                                              <span style=color:#888;font-style:italic>-- value less than 1.</span>
+  truncate <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> b <span style=color:#888;font-style:italic>-- returns the integer nearest a between zero and a</span>
+  round <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> b <span style=color:#888;font-style:italic>-- returns the nearest integer to a;</span>
+                                <span style=color:#888;font-style:italic>-- the even integer if a is equidistant</span>
+                                <span style=color:#888;font-style:italic>-- between two integers</span>
+  ceiling <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> b <span style=color:#888;font-style:italic>-- returns the least integer not less than a</span>
+  floor <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> b <span style=color:#888;font-style:italic>-- returns the greatest integer not greater than a</span>
+
+<span style=color:#888;font-style:italic>-- &#39;Floating&#39; defines trigonometric and hyperbolic functions and related functions.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Fractional</span> a <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Floating</span> a <span style=color:#2838b0>where</span>
+  pi <span style=color:#a848a8>::</span> a
+  exp <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  log <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  sqrt <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#888>(</span><span style=color:#666>**</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  logBase <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a
+  sin <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  cos <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  tan <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  asin <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  acos <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  atan <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  sinh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  cosh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  tanh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  asinh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  acosh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  atanh <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Float</span><span style=color:#666>.</span>log1p <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Float</span><span style=color:#666>.</span>expm1 <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Float</span><span style=color:#666>.</span>log1pexp <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Float</span><span style=color:#666>.</span>log1mexp <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a
+
+<span style=color:#888;font-style:italic>-- Efficient, machine-independent access to the components of a</span>
+<span style=color:#888;font-style:italic>-- floating-point number.</span>
+<span style=color:#2838b0>class</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>RealFrac</span> a<span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Floating</span> a<span style=color:#888>)</span> <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>RealFloat</span> a <span style=color:#2838b0>where</span>
+  floatRadix <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Integer</span> <span style=color:#888;font-style:italic>-- a constant function, returning the radix of the representation</span>
+                             <span style=color:#888;font-style:italic>--  (often 2)</span>
+  floatDigits <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Int</span>    <span style=color:#888;font-style:italic>-- a constant function, returning the number of digits of</span>
+                             <span style=color:#888;font-style:italic>-- &#39;floatRadix&#39; in the significand</span>
+  floatRange <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>Int</span><span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Int</span><span style=color:#888>)</span> <span style=color:#888;font-style:italic>-- a constant function, returning the lowest and highest values</span>
+                                <span style=color:#888;font-style:italic>-- the exponent may assume</span>
+  decodeFloat <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>Integer</span><span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>Int</span><span style=color:#888>)</span> <span style=color:#888;font-style:italic>-- returns the significand expressed as an &#39;Integer&#39; and an</span>
+                                     <span style=color:#888;font-style:italic>-- appropriately scaled exponent (an &#39;Int&#39;).</span>
+  encodeFloat <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integer</span> <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- performs the inverse of &#39;decodeFloat&#39; in the</span>
+                                     <span style=color:#888;font-style:italic>-- sense that for finite x with the exception of -0.0</span>
+  exponent <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#888;font-style:italic>-- the second component of &#39;decodeFloat&#39;</span>
+  significand <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- the first component of &#39;decodeFloat&#39;</span>
+  scaleFloat <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- multiplies a floating-point number by an integer power of the radix</span>
+  isNaN <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- &#39;True&#39; if the argument is an IEEE &#34;not-a-number&#34; (NaN) value</span>
+  isInfinite <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- &#39;True&#39; if the argument is an IEEE infinity or negative infinity</span>
+  isDenormalized <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- &#39;True&#39; if the argument is too small to be represented in</span>
+                              <span style=color:#888;font-style:italic>-- normalized format</span>
+  isNegativeZero <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- &#39;True&#39; if the argument is an IEEE negative zero</span>
+  isIEEE <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- &#39;True&#39; if the argument is an IEEE floating point number</span>
+  atan2 <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- a version of arctangent taking two real floating-point arguments.</span>
+
+<span style=color:#888;font-style:italic>-- A type f is a Functor if it provides a function &#39;fmap&#39; which, given any types a and b</span>
+<span style=color:#888;font-style:italic>-- lets you apply any function from (a -&gt; b) to turn an &#39;f a&#39; into an &#39;f b&#39;, preserving the</span>
+<span style=color:#888;font-style:italic>-- structure of f.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Functor</span> f <span style=color:#2838b0>where</span>
+  fmap <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> f a <span style=color:#a848a8>-&gt;</span> f b
+  <span style=color:#888>(</span><span style=color:#666>&lt;$</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> f b <span style=color:#a848a8>-&gt;</span> f a <span style=color:#888;font-style:italic>-- Replace all locations in the input with the same value.</span>
+
+<span style=color:#888;font-style:italic>-- A functor with application, providing operations to</span>
+<span style=color:#888;font-style:italic>--   - embed pure expressions (&#39;pure&#39;), and</span>
+<span style=color:#888;font-style:italic>--   - sequence computations and combine their results (&#39;&lt;*&gt;&#39; and &#39;liftA2&#39;).</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Functor</span> f <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Applicative</span> f <span style=color:#2838b0>where</span>
+  pure <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> f a <span style=color:#888;font-style:italic>-- Lift a value.</span>
+  <span style=color:#888>(</span><span style=color:#666>&lt;*&gt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> f <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> f a <span style=color:#a848a8>-&gt;</span> f b <span style=color:#888;font-style:italic>-- Sequential application.</span>
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Base</span><span style=color:#666>.</span>liftA2 <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> c<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> f a <span style=color:#a848a8>-&gt;</span> f b <span style=color:#a848a8>-&gt;</span> f c <span style=color:#888;font-style:italic>-- Lift a binary function to actions.</span>
+  <span style=color:#888>(</span><span style=color:#666>*&gt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> f a <span style=color:#a848a8>-&gt;</span> f b <span style=color:#a848a8>-&gt;</span> f b <span style=color:#888;font-style:italic>-- Sequence actions, discarding the value of the first argument.</span>
+  <span style=color:#888>(</span><span style=color:#666>&lt;*</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> f a <span style=color:#a848a8>-&gt;</span> f b <span style=color:#a848a8>-&gt;</span> f a <span style=color:#888;font-style:italic>-- Sequence actions, discarding the value of the second argument.</span>
+
+<span style=color:#888;font-style:italic>-- The &#39;Monad&#39; class defines the basic operations over a /monad/,</span>
+<span style=color:#888;font-style:italic>-- a concept from a branch of mathematics known as /category theory/.</span>
+<span style=color:#888;font-style:italic>-- From the perspective of a Haskell programmer, however, it is best to</span>
+<span style=color:#888;font-style:italic>-- think of a monad as an /abstract datatype/ of actions.</span>
+<span style=color:#888;font-style:italic>-- Haskell&#39;s &#39;do&#39; expressions provide a convenient syntax for writing</span>
+<span style=color:#888;font-style:italic>-- monadic expressions.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Applicative</span> m <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Monad</span> m <span style=color:#2838b0>where</span>
+  <span style=color:#888>(</span><span style=color:#666>&gt;&gt;=</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> m a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> m b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> m b <span style=color:#888;font-style:italic>-- Sequentially compose two actions, discarding any value produced</span>
+                                    <span style=color:#888;font-style:italic>-- by the first, like sequencing operators (such as the semicolon)</span>
+                                    <span style=color:#888;font-style:italic>-- in imperative languages.</span>
+  <span style=color:#888>(</span><span style=color:#666>&gt;&gt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> m a <span style=color:#a848a8>-&gt;</span> m b <span style=color:#a848a8>-&gt;</span> m b         <span style=color:#888;font-style:italic>-- Sequentially compose two actions, passing any value produced</span>
+                                    <span style=color:#888;font-style:italic>-- by the first as an argument to the second.</span>
+  return <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> m a                <span style=color:#888;font-style:italic>-- Inject a value into the monadic type.</span>
+
+<span style=color:#888;font-style:italic>-- The class of semigroups (types with an associative binary operation).</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Semigroup</span> a <span style=color:#2838b0>where</span>
+  <span style=color:#888>(</span><span style=color:#666>&lt;&gt;</span><span style=color:#888>)</span> <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- An associative operation.</span>
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Base</span><span style=color:#666>.</span>sconcat <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Base</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>NonEmpty</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Reduce a non-empty list with &#39;&lt;&gt;&#39;</span>
+  <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Base</span><span style=color:#666>.</span>stimes <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Integral</span> b <span style=color:#a848a8>=&gt;</span> b <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Repeat a value n times.</span>
+
+<span style=color:#888;font-style:italic>-- Monoid</span>
+<span style=color:#888;font-style:italic>-- The class of monoids (types with an associative binary operation that</span>
+<span style=color:#888;font-style:italic>-- has an identity).</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Semigroup</span> a <span style=color:#a848a8>=&gt;</span> <span style=color:#2838b0;font-style:italic>Monoid</span> a <span style=color:#2838b0>where</span>
+  mempty <span style=color:#a848a8>::</span> a <span style=color:#888;font-style:italic>-- An associative operation</span>
+  mappend <span style=color:#a848a8>::</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- An associative operation</span>
+  mconcat <span style=color:#a848a8>::</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- Fold a list using the monoid.</span>
+
+<span style=color:#888;font-style:italic>-- Data structures that can be folded.</span>
+<span style=color:#2838b0>class</span> <span style=color:#2838b0;font-style:italic>Foldable</span> t <span style=color:#2838b0>where</span>
+  <span style=color:#2838b0;font-style:italic>Data</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Foldable</span><span style=color:#666>.</span>fold <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Monoid</span> m <span style=color:#a848a8>=&gt;</span> t m <span style=color:#a848a8>-&gt;</span> m
+  foldMap <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Monoid</span> m <span style=color:#a848a8>=&gt;</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> m<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> m
+  <span style=color:#2838b0;font-style:italic>Data</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Foldable</span><span style=color:#666>.</span>foldMap&#39; <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Monoid</span> m <span style=color:#a848a8>=&gt;</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> m<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> m
+  foldr <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> b
+  <span style=color:#2838b0;font-style:italic>Data</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Foldable</span><span style=color:#666>.</span>foldr&#39; <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> b
+  foldl <span style=color:#a848a8>::</span> <span style=color:#888>(</span>b <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> b
+  <span style=color:#2838b0;font-style:italic>Data</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Foldable</span><span style=color:#666>.</span>foldl&#39; <span style=color:#a848a8>::</span> <span style=color:#888>(</span>b <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> b<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> b <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> b
+  foldr1 <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a
+  foldl1 <span style=color:#a848a8>::</span> <span style=color:#888>(</span>a <span style=color:#a848a8>-&gt;</span> a <span style=color:#a848a8>-&gt;</span> a<span style=color:#888>)</span> <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a
+  <span style=color:#2838b0;font-style:italic>Data</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Foldable</span><span style=color:#666>.</span>toList <span style=color:#a848a8>::</span> t a <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[</span>a<span style=color:#888>]</span> <span style=color:#888;font-style:italic>-- List of elements of a structure, from left to right.</span>
+  null <span style=color:#a848a8>::</span> t a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- Test whether the structure is empty. The default implementation is</span>
+                      <span style=color:#888;font-style:italic>-- optimized for structures that are similar to cons-lists, because there</span>
+                      <span style=color:#888;font-style:italic>-- is no general way to do better.</span>
+  length <span style=color:#a848a8>::</span> t a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#888;font-style:italic>--  Returns the size/length of a finite structure as an &#39;Int&#39;.</span>
+  elem <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Eq</span> a <span style=color:#a848a8>=&gt;</span> a <span style=color:#a848a8>-&gt;</span> t a <span style=color:#a848a8>-&gt;</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#888;font-style:italic>-- Does the element occur in the structure?</span>
+  maximum <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Ord</span> a <span style=color:#a848a8>=&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- The largest element of a non-empty structure.</span>
+  minimum <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Ord</span> a <span style=color:#a848a8>=&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- The least element of a non-empty structure.</span>
+  sum <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Num</span> a <span style=color:#a848a8>=&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a     <span style=color:#888;font-style:italic>-- computes the sum of the numbers of a structure.</span>
+  product <span style=color:#a848a8>::</span> <span style=color:#2838b0;font-style:italic>Num</span> a <span style=color:#a848a8>=&gt;</span> t a <span style=color:#a848a8>-&gt;</span> a <span style=color:#888;font-style:italic>-- computes the product of the numbers of a structure.</span>
+</code></pre></div><p>Also their hierarchy:</p><p><img src=/img/haskell_classtype.svg alt="Haskell Typeclass Hierarchy"></p><h2 id=types>Types</h2><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-haskell data-lang=haskell><span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>Bool</span> <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>False</span> <span style=color:#666>|</span> <span style=color:#2838b0;font-style:italic>True</span>
+
+<span style=color:#888;font-style:italic>-- `Int` is a fixed-precision integer type with at least the range [-2^29 .. 2^29-1].</span>
+<span style=color:#888;font-style:italic>-- The exact range for a given implementation can be determined by using</span>
+<span style=color:#888;font-style:italic>-- &#39;Prelude.minBound&#39; and &#39;Prelude.maxBound&#39; from the &#39;Prelude.Bounded&#39; class.</span>
+<span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>Int</span> <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Types</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>I</span><span style=color:#666>#</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Int</span><span style=color:#666>#</span>
+
+<span style=color:#888;font-style:italic>-- `Integer` is arbitrary precision integers. In contrast with fixed-size integral types</span>
+<span style=color:#888;font-style:italic>-- such as &#39;Int&#39;, the &#39;Integer&#39; type represents the entire infinite range of</span>
+<span style=color:#888;font-style:italic>-- integers.</span>
+<span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>Integer</span>
+
+<span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>Ordering</span> <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>LT</span> <span style=color:#666>|</span> <span style=color:#2838b0;font-style:italic>EQ</span> <span style=color:#666>|</span> <span style=color:#2838b0;font-style:italic>GT</span>
+
+<span style=color:#888;font-style:italic>-- The character type &#39;Char&#39; is an enumeration whose values represent</span>
+<span style=color:#888;font-style:italic>-- Unicode (or equivalently ISO/IEC 10646) code points</span>
+<span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>Char</span> <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Types</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>C</span><span style=color:#666>#</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Char</span><span style=color:#666>#</span>
+
+<span style=color:#888;font-style:italic>-- A &#39;String&#39; is a list of characters.  String constants in Haskell are values</span>
+<span style=color:#888;font-style:italic>-- of type &#39;String&#39;.</span>
+<span style=color:#2838b0>type</span> <span style=color:#2838b0;font-style:italic>String</span> <span style=color:#a848a8>=</span> <span style=color:#888>[</span><span style=color:#2838b0;font-style:italic>Char</span><span style=color:#888>]</span>
+
+<span style=color:#888;font-style:italic>-- A parser for a type a, represented as a function that takes a</span>
+<span style=color:#888;font-style:italic>-- &#39;String&#39; and returns a list of possible parses as (a,&#39;String&#39;) pairs.</span>
+<span style=color:#2838b0>type</span> <span style=color:#2838b0;font-style:italic>ReadS</span> a <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>String</span> <span style=color:#a848a8>-&gt;</span> <span style=color:#888>[(</span>a<span style=color:#888>,</span> <span style=color:#2838b0;font-style:italic>String</span><span style=color:#888>)]</span>
+
+<span style=color:#888;font-style:italic>-- A value of type `&#39;IO&#39; a` is a computation which, when performed,</span>
+<span style=color:#888;font-style:italic>-- does some I/O before returning a value of type a.</span>
+<span style=color:#888;font-style:italic>-- There is really only one way to &#34;perform&#34; an I/O action: bind it to</span>
+<span style=color:#888;font-style:italic>-- Main.main in your program.  When your program is run, the I/O will</span>
+<span style=color:#888;font-style:italic>-- be performed.  It isn&#39;t possible to perform I/O from an arbitrary</span>
+<span style=color:#888;font-style:italic>-- function, unless that function is itself in the &#39;IO&#39; monad and called</span>
+<span style=color:#888;font-style:italic>-- at some point, directly or indirectly, from Main.main.</span>
+<span style=color:#888;font-style:italic>-- &#39;IO&#39; is a monad, so &#39;IO&#39; actions can be combined using either the do-notation</span>
+<span style=color:#888;font-style:italic>-- or the &#39;Prelude.&gt;&gt;&#39; and &#39;Prelude.&gt;&gt;=&#39; operations from the &#39;Prelude.Monad&#39;</span>
+<span style=color:#888;font-style:italic>-- class.</span>
+<span style=color:#2838b0>newtype</span> <span style=color:#2838b0;font-style:italic>IO</span> a
+  <span style=color:#a848a8>=</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Types</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>IO</span> <span style=color:#888>(</span><span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>State</span><span style=color:#666>#</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>RealWorld</span>
+                  <span style=color:#a848a8>-&gt;</span> <span style=color:#888>(</span><span style=color:#666>#</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>State</span><span style=color:#666>#</span> <span style=color:#2838b0;font-style:italic>GHC</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>Prim</span><span style=color:#666>.</span><span style=color:#2838b0;font-style:italic>RealWorld</span><span style=color:#888>,</span> a <span style=color:#666>#</span><span style=color:#888>))</span>
+
+<span style=color:#888;font-style:italic>-- GHC.Base.NonEmpty</span>
+<span style=color:#888;font-style:italic>-- Non-empty (and non-strict) list type.</span>
+<span style=color:#2838b0>data</span> <span style=color:#2838b0;font-style:italic>NonEmpty</span> a <span style=color:#a848a8>=</span> a <span style=color:#2838b0;font-style:italic>:|</span> <span style=color:#888>[</span>a<span style=color:#888>]</span>
+</code></pre></div></div></div></section><section class=section><div class="container has-text-centered"><p></p></div></section></body></html>
