@@ -4,6 +4,7 @@ languageCode: en
 title: 6cdh's Blog
 theme: kiss
 hasCJKLanguage: true
+disqusShortname: 6cdh-github-io
 
 params:
   info:
@@ -33,37 +34,3 @@ markup:
 
 taxonomies:
   tag: tags
-
-#   author: 6cdh
-#   description: Personal blog powered by Hugo
-#   accounts: &accounts
-#     github: 6cdh
-#     mail: cd6cdh@gmail.com
-#     twitter: cd6cdh
-#   dark_mode: dark # dark or light or auto
-#   font_family: Quicksand, Helvetica, Tahoma, Arial, STXihei
-#   googlefont: Quicksand
-#   highlightjs:
-#     enable: true
-#     style: atom-one-light
-#     extra_langs:
-#       - haskell
-#       - cmake
-#       - scheme
-#       - x86asm
-#
-# menu:
-#   main:
-#     - url: /
-#       name: Home
-#     - url: /about/
-#       name: About
-#     - url: /posts/
-#       name: Posts
-#   icon:
-#     - url: mailto:*accounts.mail
-#       icon: fas fa-envelope
-#     - url: https://github.com/*accounts.github/
-#       icon: fab fa-github
-#     - url: https://twitter.com/*accounts.twitter/
-#       icon: fab fa-twitter
