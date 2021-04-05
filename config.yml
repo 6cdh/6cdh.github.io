@@ -13,6 +13,7 @@ params:
     related: false
     codeCopy: false
     taxonomiesCount: true
+    homeTitle: 6cdh's Blog
   social:
     github: 6cdh
     email: cd6cdh@gmail.com
