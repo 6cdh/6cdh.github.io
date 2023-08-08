@@ -58,7 +58,7 @@ I may not be at the level of top players yet, but I have improved significantly 
 
 The following points are not the focus of this post, but there is a lot of room for them:
 
-- problem-solving methodology. There are many common strategies for solving problems. The most common one is probably to identify the properties of known data and objects and the relationship between that data and the question. It sometimes leads to a simpler solution or simpler to implement.
+- problem-solving methodology. There are many common strategies for solving problems. The most common one is probably to identify the properties of known data and objects and the relationship between that data and the question. A different strategy sometimes leads to a simpler solution or simpler to implement.
 - program proof. My brain runs a JIT (just in time) prover when writing code to reduce potential bugs. It's tiring but helps to write the correct code.
 - debug. Effective debugging requires reasoning like a detective, careful investigation, imagination, and a bit of luck.
 - abstraction. It is one of the biggest factors in programming, but a wrong choice can also add extra cost.
