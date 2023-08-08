@@ -17,10 +17,12 @@ params:
   social:
     github: 6cdh
     email: cd6cdh@gmail.com
+    rss: index.xml
     config:
       platforms:
         - github
         - email
+        - rss
   features:
     disqusOnDemand: true
     katex: true
@@ -29,6 +31,8 @@ params:
     googleFonts:
     customCSS:
       - custom.css
+  rss:
+    includeContent: false
 
 markup:
   highlight:
