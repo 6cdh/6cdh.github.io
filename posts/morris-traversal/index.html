@@ -11,103 +11,105 @@
 | 3 |     | 4 | | 5 |     | 6 |
 +---+     +---+ +---+     +---+
 如图, 假设我们已经访问了结点 0 -> 1 -> 3, 因为没有保存父节点的信息, 没有办法返回到结点 1 然后继续访问结点 4, 更别说回到结点 0 并访问结点 2, 5, 6 了. 理论上, 我们需要 O(h) 空间来保存我们需要的信息, 这里 h 是树的高度. 当然, 如果每个结点内还保存了一个指向其父结点的指针或者这个树是一个单链表, 我们也可以不使用额外的空间, 但是这里谈论的并不是特例, 而是适用于所有二叉树的方法.
-Morris 可以不使用额外的空间而遍历二叉树. 它是如何做到的呢? 显然, 它也一定需要空间来保存信息, 这些空间不来自于堆或者栈, 而是来自二叉树本身 (当然, 二叉树本身或许也是在堆或栈上的)."><meta property="og:url" content="https://6cdh.github.io/posts/morris-traversal/"><meta property="og:site_name" content="6cdh's Blog"><meta property="og:type" content="article"><meta property="og:image" content="https://www.gravatar.com/avatar/b8cddc4add92aa9aa4ad41498604c028?s=256"><meta property="article:section" content="Posts"><meta property="article:tag" content="tree"><meta property="article:published_time" content="2020-11-26T16:46:42Z"><meta property="article:modified_time" content="2020-11-26T16:46:42Z"><meta name=twitter:card content="summary"><meta name=twitter:site content="@"><meta name=twitter:creator content="@"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://6cdh.github.io/custom.css><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel=stylesheet><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://6cdh.github.io/posts/morris-traversal/><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"></head><body><section class=section><div class=container><nav id=nav-main class=nav><div id=nav-name class=nav-left><a id=nav-anchor class=nav-item href=https://6cdh.github.io/><h1 id=nav-heading class="title is-4">6cdh's Blog</h1></a></div><div class=nav-right><nav id=nav-items class="nav-item level is-mobile"><a class=level-item aria-label=github href=https://github.com/6cdh target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:cd6cdh@gmail.com target=_blank rel=noopener><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></i></span></a></nav></div></nav><nav class=nav></nav></div><script src=/js/navicon-shift.js></script></section><section class=section><div class=container><div class="subtitle tags is-6 is-pulled-right"><a class="subtitle is-6" href=/tags/tree/>#tree</a></div><h2 class="subtitle is-6">November 26, 2020</h2><h1 class=title>二叉树的常数空间遍历</h1><div class=content><p>如果你不了解 Morris 遍历, 不使用栈(或者说额外空间)遍历二叉树, 你可能认为是不可能的. 为什么这么说? 因为在遍历时我们需要空间保存父结点或相关的信息, 如果不保存, 遍历时, 就只能下降而不能上升:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext>             +---+
-       +-----| 0 |-----+
-       |     +---+     |
-       |               |
-     +---+           +---+
-  +--| 1 |--+     +--| 2 |--+
-  |  +---+  |     |  +---+  |
-  |         |     |         |
-+---+     +---+ +---+     +---+
-| 3 |     | 4 | | 5 |     | 6 |
-+---+     +---+ +---+     +---+
-</code></pre></div><p>如图, 假设我们已经访问了结点 0 -> 1 -> 3, 因为没有保存父节点的信息, 没有办法返回到结点 1 然后继续访问结点 4, 更别说回到结点 0 并访问结点 2, 5, 6 了. 理论上, 我们需要 O(h) 空间来保存我们需要的信息, 这里 h 是树的高度. 当然, 如果每个结点内还保存了一个指向其父结点的指针或者这个树是一个单链表, 我们也可以不使用额外的空间, 但是这里谈论的并不是特例, 而是适用于所有二叉树的方法.</p><p>Morris 可以不使用额外的空间而遍历二叉树. 它是如何做到的呢? 显然, 它也一定需要空间来保存信息, 这些空间不来自于堆或者栈, 而是来自二叉树本身 (当然, 二叉树本身或许也是在堆或栈上的).</p><p>二叉树中有哪些空间被浪费了呢? 显然是空节点或空 (null) 字段. 这些字段在二叉树中大量重复, 可以说是一种浪费. 对于 n 个结点的二叉树, 空的字段一共有 n+1 个 (n 个结点共有 2n 个字段, 其中 n-1 个字段指向正常结点, 剩下 n+1 个字段表示空), 这足以满足 O(h) 的需求了. 使用这些空的字段, 便是 Morris 遍历的基本思想. 此外, 还有一些细节问题, 例如, 我们使用了这些字段, 破坏了树的结构, 还能有容易的方法来遍历它吗? 遍历后又怎么恢复空字段呢? 这些细节在之后描述.</p><p>Morris 使用了现成的利用空字段的方法: 线索二叉树 <em>(threaded binary tree)</em>. 如果你不了解线索二叉树, 那么它的定义如下:</p><blockquote><p>A binary tree is threaded by making all right child pointers that would normally be null point to the in-order successor of the node (if it exists), and all left child pointers that would normally be null point to the in-order predecessor of the node.</p></blockquote><p>即所有没有右子结点的结点中保存右子节点的字段 (即 null) 都被利用, 保存该节点的后继. 当访问到这个结点时, 可以借助这个 null 字段来访问该结点的后继. 所谓的后继即中序遍历的后继. 如果我们用于前序/后序遍历, 那么它是前序/后序遍历的后继了.</p><p>多说无益, 看图:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext>             +---+
-       +-----| 0 |-----+
-       |     +---+     |
-       |               |
-     +---+           +---+
-  +--| 1 |--+     +--| 2 |--+
-  |  +---+  |     |  +---+  |
-  |         |     |         |
-+---+     +---+ +---+     +---+
-| 3 |     | 4 | | 5 |     | 6 |
-+---+     +---+ +---+     +---+
-</code></pre></div><p>这个树的中序遍历结果如下:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext>3 1 4 0 5 2 6
-</code></pre></div><p>对于某个结点 x, 如果 x 的左节点非空, 那么中序遍历应该先访问 x 的左子树, 然后是 x, 然后是 x 的右子树. 为了在访问完它的左子树后还能回到 x, 在遍历树的指针到达 x 并且还没有访问它的左子树时, 将 x 挂到 x 的左结点的右结点的右结点的右结点&mldr;(即 x 的左子树的所有叶子的最右边那个叶子) 下面, 这样访问完左子树以后, 就可以回到 x 了, 再次回到 x 后, 将前一个叶子(即 x 的左子树的最右边的叶子) 重新置回 null.</p><h2 id=morris-中序遍历的实现>Morris 中序遍历的实现</h2><p>我们有 Morris 中序遍历的 C++ 代码 (假设结点的元素类型是 int):</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c++ data-lang=c++>vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorderTraversal<span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>root<span style=color:#888>)</span> <span style=color:#888>{</span>
-    vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorder_list<span style=color:#888>;</span>
-
-    <span style=color:#2838b0>auto</span> curr <span style=color:#666>=</span> root<span style=color:#888>;</span>
-    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>curr <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-        <span style=color:#2838b0>if</span> <span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>left <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-             <span style=color:#888;font-style:italic>// visit curr
-</span><span style=color:#888;font-style:italic></span>            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
-            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#888>{</span>
-            <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-            <span style=color:#2838b0>while</span> <span style=color:#888>(</span><span style=color:#388038>true</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-                <span style=color:#2838b0>if</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-                    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> curr<span style=color:#888>;</span>
-                    curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-                    <span style=color:#2838b0>break</span><span style=color:#888>;</span>
-                <span style=color:#888>}</span>
-                <span style=color:#2838b0>if</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-                    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
-                    <span style=color:#888;font-style:italic>// visit curr
-</span><span style=color:#888;font-style:italic></span>                    inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
-                    curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-                    <span style=color:#2838b0>break</span><span style=color:#888>;</span>
-                <span style=color:#888>}</span>
-                prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-            <span style=color:#888>}</span>
-        <span style=color:#888>}</span>
-    <span style=color:#888>}</span>
-    <span style=color:#2838b0>return</span> inorder_list<span style=color:#888>;</span>
-<span style=color:#888>}</span>
-</code></pre></div><h2 id=栈的视角>栈的视角</h2><p>我们在二叉树中寻找 null 结点并保存某个结点的信息, 访问完后再将信息恢复原状. 这满足先进先出的规则, 也可以称为栈. 只不过这个栈没有实体, 是抽象的, 只由操作定义. 栈的 push 是访问 x 的左子树时, 将 x 的信息保存到 x 的左子树的最右边的叶子. 栈的 pop 是访问完左子树后, 将原来保存 x 的那个叶子恢复.</p><p>为了使这个想法更明显, 代码重写如下:</p><div class=highlight><pre style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c++ data-lang=c++><span style=color:#888;font-style:italic>// Is stack empty?
-</span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>bool</span> <span style=color:#785840>empty</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span> <span style=color:#666>&amp;&amp;</span> prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-    <span style=color:#888>}</span>
-    <span style=color:#2838b0>return</span> prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
-<span style=color:#888>}</span>
-
-<span style=color:#888;font-style:italic>// push curr into stack
-</span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>void</span> <span style=color:#785840>push</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-    <span style=color:#888>}</span>
-    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> curr<span style=color:#888>;</span>
-<span style=color:#888>}</span>
-
-<span style=color:#888;font-style:italic>// pop curr
-</span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>void</span> <span style=color:#785840>pop</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
-        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-    <span style=color:#888>}</span>
-    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
-<span style=color:#888>}</span>
-
-vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorderTraversal<span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>root<span style=color:#888>)</span> <span style=color:#888>{</span>
-    vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorder_list<span style=color:#888>;</span>
-
-    <span style=color:#2838b0>auto</span> curr <span style=color:#666>=</span> root<span style=color:#888>;</span>
-    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>curr <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-        <span style=color:#2838b0>if</span> <span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>left <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
-            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
-            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#785840>if</span> <span style=color:#888>(</span>empty<span style=color:#888>(</span>curr<span style=color:#888>))</span> <span style=color:#888>{</span>
-            push<span style=color:#888>(</span>curr<span style=color:#888>);</span>
-            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
-        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#888>{</span>
-            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
-            pop<span style=color:#888>(</span>curr<span style=color:#888>);</span>
-            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
-        <span style=color:#888>}</span>
-    <span style=color:#888>}</span>
-    <span style=color:#2838b0>return</span> inorder_list<span style=color:#888>;</span>
-<span style=color:#888>}</span>
-</code></pre></div><p>本文只描述了中序遍历, 但前序和后序的思路类似.</p><h2 id=references>References</h2><ul><li><a href=https://en.wikipedia.org/wiki/Tree_traversal>Tree traversal - Wikipedia</a></li><li><a href=https://en.wikipedia.org/wiki/Threaded_binary_tree>Threaded binary tree - Wikipedia</a></li></ul></div></div></section><section class=section><div class=container><aside><div id=disqus_thread></div></aside><div id=show_comments><a id=load_comments class="button is-link">Load comments</a></div><script type=text/javascript>var disqus_shortname='6cdh-github-io',hash;function disqus(){var a=document.createElement('script');a.type='text/javascript',a.async=!0,a.src='//'+disqus_shortname+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)}hash=window.location.hash.substr(1),hash.length>8&&hash.substring(0,8)==="comment-"?(disqus(),document.getElementById("show_comments").style.display="none"):document.getElementById('load_comments').onclick=function(){disqus(),document.getElementById("show_comments").style.display="none"}</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript rel=nofollow>comments powered by Disqus.</a></noscript></div></section><section class=section><div class="container has-text-centered"><p></p></div></section></body></html>
+Morris 可以不使用额外的空间而遍历二叉树. 它是如何做到的呢? 显然, 它也一定需要空间来保存信息, 这些空间不来自于堆或者栈, 而是来自二叉树本身 (当然, 二叉树本身或许也是在堆或栈上的)."><meta property="og:url" content="https://6cdh.github.io/posts/morris-traversal/"><meta property="og:site_name" content="6cdh's Blog"><meta property="og:type" content="article"><meta property="og:image" content="https://www.gravatar.com/avatar/b8cddc4add92aa9aa4ad41498604c028?s=256"><meta property="article:section" content="Posts"><meta property="article:tag" content="tree"><meta property="article:published_time" content="2020-11-26T16:46:42Z"><meta property="article:modified_time" content="2020-11-26T16:46:42Z"><meta name=twitter:card content="summary"><meta name=twitter:site content="@"><meta name=twitter:creator content="@"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=https://6cdh.github.io/custom.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css integrity=sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js integrity=sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4 crossorigin=anonymous></script>
+<script defer src=https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js integrity=sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa crossorigin=anonymous></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]})})</script><link rel=preconnect href=https://fonts.gstatic.com><link href="https://fonts.googleapis.com/css2?family=Source%20Serif%204&display=swap" rel=stylesheet><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://6cdh.github.io/posts/morris-traversal/><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"></head><body><section class=section><div class=container><nav id=nav-main class=nav><div id=nav-name class=nav-left><a id=nav-anchor class=nav-item href=https://6cdh.github.io/><h1 id=nav-heading class="title is-4">6cdh's Blog</h1></a></div><div class=nav-right><nav id=nav-items class="nav-item level is-mobile"><a class=level-item aria-label=github href=https://github.com/6cdh target=_blank rel='me noopener'><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></i></span></a><a class=level-item aria-label=email href=mailto:cd6cdh@gmail.com target=_blank rel='me noopener'><span class=icon><i><svg viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></i></span></a></nav></div></nav><nav class=nav></nav></div><script src=/js/navicon-shift.js></script></section><section class=section><div class=container><div class="subtitle tags is-6 is-pulled-right"><a class="subtitle is-6" href=/tags/tree/>#tree</a></div><h2 class="subtitle is-6">November 26, 2020</h2><h1 class=title>二叉树的常数空间遍历</h1><div class=content><p>如果你不了解 Morris 遍历, 不使用栈(或者说额外空间)遍历二叉树, 你可能认为是不可能的. 为什么这么说? 因为在遍历时我们需要空间保存父结点或相关的信息, 如果不保存, 遍历时, 就只能下降而不能上升:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext><span style=display:flex><span>             +---+
+</span></span><span style=display:flex><span>       +-----| 0 |-----+
+</span></span><span style=display:flex><span>       |     +---+     |
+</span></span><span style=display:flex><span>       |               |
+</span></span><span style=display:flex><span>     +---+           +---+
+</span></span><span style=display:flex><span>  +--| 1 |--+     +--| 2 |--+
+</span></span><span style=display:flex><span>  |  +---+  |     |  +---+  |
+</span></span><span style=display:flex><span>  |         |     |         |
+</span></span><span style=display:flex><span>+---+     +---+ +---+     +---+
+</span></span><span style=display:flex><span>| 3 |     | 4 | | 5 |     | 6 |
+</span></span><span style=display:flex><span>+---+     +---+ +---+     +---+
+</span></span></code></pre></div><p>如图, 假设我们已经访问了结点 0 -> 1 -> 3, 因为没有保存父节点的信息, 没有办法返回到结点 1 然后继续访问结点 4, 更别说回到结点 0 并访问结点 2, 5, 6 了. 理论上, 我们需要 O(h) 空间来保存我们需要的信息, 这里 h 是树的高度. 当然, 如果每个结点内还保存了一个指向其父结点的指针或者这个树是一个单链表, 我们也可以不使用额外的空间, 但是这里谈论的并不是特例, 而是适用于所有二叉树的方法.</p><p>Morris 可以不使用额外的空间而遍历二叉树. 它是如何做到的呢? 显然, 它也一定需要空间来保存信息, 这些空间不来自于堆或者栈, 而是来自二叉树本身 (当然, 二叉树本身或许也是在堆或栈上的).</p><p>二叉树中有哪些空间被浪费了呢? 显然是空节点或空 (null) 字段. 这些字段在二叉树中大量重复, 可以说是一种浪费. 对于 n 个结点的二叉树, 空的字段一共有 n+1 个 (n 个结点共有 2n 个字段, 其中 n-1 个字段指向正常结点, 剩下 n+1 个字段表示空), 这足以满足 O(h) 的需求了. 使用这些空的字段, 便是 Morris 遍历的基本思想. 此外, 还有一些细节问题, 例如, 我们使用了这些字段, 破坏了树的结构, 还能有容易的方法来遍历它吗? 遍历后又怎么恢复空字段呢? 这些细节在之后描述.</p><p>Morris 使用了现成的利用空字段的方法: 线索二叉树 <em>(threaded binary tree)</em>. 如果你不了解线索二叉树, 那么它的定义如下:</p><blockquote><p>A binary tree is threaded by making all right child pointers that would normally be null point to the in-order successor of the node (if it exists), and all left child pointers that would normally be null point to the in-order predecessor of the node.</p></blockquote><p>即所有没有右子结点的结点中保存右子节点的字段 (即 null) 都被利用, 保存该节点的后继. 当访问到这个结点时, 可以借助这个 null 字段来访问该结点的后继. 所谓的后继即中序遍历的后继. 如果我们用于前序/后序遍历, 那么它是前序/后序遍历的后继了.</p><p>多说无益, 看图:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext><span style=display:flex><span>             +---+
+</span></span><span style=display:flex><span>       +-----| 0 |-----+
+</span></span><span style=display:flex><span>       |     +---+     |
+</span></span><span style=display:flex><span>       |               |
+</span></span><span style=display:flex><span>     +---+           +---+
+</span></span><span style=display:flex><span>  +--| 1 |--+     +--| 2 |--+
+</span></span><span style=display:flex><span>  |  +---+  |     |  +---+  |
+</span></span><span style=display:flex><span>  |         |     |         |
+</span></span><span style=display:flex><span>+---+     +---+ +---+     +---+
+</span></span><span style=display:flex><span>| 3 |     | 4 | | 5 |     | 6 |
+</span></span><span style=display:flex><span>+---+     +---+ +---+     +---+
+</span></span></code></pre></div><p>这个树的中序遍历结果如下:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plaintext data-lang=plaintext><span style=display:flex><span>3 1 4 0 5 2 6
+</span></span></code></pre></div><p>对于某个结点 x, 如果 x 的左节点非空, 那么中序遍历应该先访问 x 的左子树, 然后是 x, 然后是 x 的右子树. 为了在访问完它的左子树后还能回到 x, 在遍历树的指针到达 x 并且还没有访问它的左子树时, 将 x 挂到 x 的左结点的右结点的右结点的右结点&mldr;(即 x 的左子树的所有叶子的最右边那个叶子) 下面, 这样访问完左子树以后, 就可以回到 x 了, 再次回到 x 后, 将前一个叶子(即 x 的左子树的最右边的叶子) 重新置回 null.</p><h2 id=morris-中序遍历的实现>Morris 中序遍历的实现</h2><p>我们有 Morris 中序遍历的 C++ 代码 (假设结点的元素类型是 int):</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c++ data-lang=c++><span style=display:flex><span>vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorderTraversal<span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>root<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>    vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorder_list<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>auto</span> curr <span style=color:#666>=</span> root<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>curr <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#2838b0>if</span> <span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>left <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>             <span style=color:#888;font-style:italic>// visit curr
+</span></span></span><span style=display:flex><span><span style=color:#888;font-style:italic></span>            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#2838b0>while</span> <span style=color:#888>(</span><span style=color:#388038>true</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>                <span style=color:#2838b0>if</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>                    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> curr<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                    curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#2838b0>break</span><span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>                <span style=color:#2838b0>if</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>                    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#888;font-style:italic>// visit curr
+</span></span></span><span style=display:flex><span><span style=color:#888;font-style:italic></span>                    inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>                    curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                    <span style=color:#2838b0>break</span><span style=color:#888>;</span>
+</span></span><span style=display:flex><span>                <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>                prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>return</span> inorder_list<span style=color:#888>;</span>
+</span></span><span style=display:flex><span><span style=color:#888>}</span>
+</span></span></code></pre></div><h2 id=栈的视角>栈的视角</h2><p>我们在二叉树中寻找 null 结点并保存某个结点的信息, 访问完后再将信息恢复原状. 这满足先进先出的规则, 也可以称为栈. 只不过这个栈没有实体, 是抽象的, 只由操作定义. 栈的 push 是访问 x 的左子树时, 将 x 的信息保存到 x 的左子树的最右边的叶子. 栈的 pop 是访问完左子树后, 将原来保存 x 的那个叶子恢复.</p><p>为了使这个想法更明显, 代码重写如下:</p><div class=highlight><pre tabindex=0 style=background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c++ data-lang=c++><span style=display:flex><span><span style=color:#888;font-style:italic>// Is stack empty?
+</span></span></span><span style=display:flex><span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>bool</span> <span style=color:#785840>empty</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span> <span style=color:#666>&amp;&amp;</span> prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>return</span> prev<span style=color:#666>-&gt;</span>right <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
+</span></span><span style=display:flex><span><span style=color:#888>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#888;font-style:italic>// push curr into stack
+</span></span></span><span style=display:flex><span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>void</span> <span style=color:#785840>push</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> curr<span style=color:#888>;</span>
+</span></span><span style=display:flex><span><span style=color:#888>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#888;font-style:italic>// pop curr
+</span></span></span><span style=display:flex><span><span style=color:#888;font-style:italic></span><span style=color:#2838b0;font-style:italic>void</span> <span style=color:#785840>pop</span><span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>auto</span> prev <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>prev<span style=color:#666>-&gt;</span>right <span style=color:#666>!=</span> curr<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>        prev <span style=color:#666>=</span> prev<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    prev<span style=color:#666>-&gt;</span>right <span style=color:#666>=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>;</span>
+</span></span><span style=display:flex><span><span style=color:#888>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorderTraversal<span style=color:#888>(</span>TreeNode <span style=color:#666>*</span>root<span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>    vector<span style=color:#666>&lt;</span><span style=color:#2838b0;font-style:italic>int</span><span style=color:#666>&gt;</span> inorder_list<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>auto</span> curr <span style=color:#666>=</span> root<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>while</span> <span style=color:#888>(</span>curr <span style=color:#666>!=</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#2838b0>if</span> <span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>left <span style=color:#666>==</span> <span style=color:#2838b0>nullptr</span><span style=color:#888>)</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#785840>if</span> <span style=color:#888>(</span>empty<span style=color:#888>(</span>curr<span style=color:#888>))</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>            push<span style=color:#888>(</span>curr<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>left<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#888>}</span> <span style=color:#2838b0>else</span> <span style=color:#888>{</span>
+</span></span><span style=display:flex><span>            inorder_list<span style=color:#888>.</span>push_back<span style=color:#888>(</span>curr<span style=color:#666>-&gt;</span>val<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>            pop<span style=color:#888>(</span>curr<span style=color:#888>);</span>
+</span></span><span style=display:flex><span>            curr <span style=color:#666>=</span> curr<span style=color:#666>-&gt;</span>right<span style=color:#888>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#888>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#2838b0>return</span> inorder_list<span style=color:#888>;</span>
+</span></span><span style=display:flex><span><span style=color:#888>}</span>
+</span></span></code></pre></div><p>本文只描述了中序遍历, 但前序和后序的思路类似.</p><h2 id=references>References</h2><ul><li><a href=https://en.wikipedia.org/wiki/Tree_traversal>Tree traversal - Wikipedia</a></li><li><a href=https://en.wikipedia.org/wiki/Threaded_binary_tree>Threaded binary tree - Wikipedia</a></li></ul></div></div></section><section class=section><div class=container><aside><div id=disqus_thread></div></aside><div id=show_comments><a id=load_comments class="button is-link">Load comments</a></div><script type=text/javascript>var disqus_shortname="6cdh-github-io",hash;function disqus(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="//"+disqus_shortname+".disqus.com/embed.js",(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(e)}hash=window.location.hash.substr(1),hash.length>8&&hash.substring(0,8)==="comment-"?(disqus(),document.getElementById("show_comments").style.display="none"):document.getElementById("load_comments").onclick=function(){disqus(),document.getElementById("show_comments").style.display="none"}</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript rel=nofollow>comments powered by Disqus.</a></noscript></div></section><section class=section><div class="container has-text-centered"><p></p><p>Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/ribice/kiss>Kiss</a>.</p></div></section></body></html>
