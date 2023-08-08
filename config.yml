@@ -9,7 +9,7 @@ disqusShortname: 6cdh-github-io
 params:
   info:
     enableSocial: true
-    poweredby: false
+    poweredby: true
     related: false
     codeCopy: false
     taxonomiesCount: true
@@ -23,9 +23,11 @@ params:
         - email
   features:
     disqusOnDemand: true
+    katex: true
+    mathjax: false
   assets:
     googleFonts:
-      - Quicksand
+      - Source Serif 4
     customCSS:
       - custom.css
 
