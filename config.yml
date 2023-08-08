@@ -27,7 +27,6 @@ params:
     mathjax: false
   assets:
     googleFonts:
-      - Source Serif 4
     customCSS:
       - custom.css
 
