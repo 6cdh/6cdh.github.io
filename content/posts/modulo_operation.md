@@ -18,7 +18,7 @@ $$
 \begin{aligned}
 & q \in Z \cr
 & a = bq + r \cr
-& |r| < |n| \cr
+& |r| < |b| \cr
 \end{aligned}
 $$
 
