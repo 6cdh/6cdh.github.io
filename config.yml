@@ -2,7 +2,7 @@
 baseurl: https://6cdh.github.io/
 languageCode: en
 title: 6cdh's Blog
-theme: kiss
+theme: kiss-personal
 hasCJKLanguage: true
 disqusShortname: 6cdh-github-io
 
