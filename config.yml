@@ -1,0 +1,42 @@
+---
+baseurl: https://6cdh.github.io/
+languageCode: en
+title: 6cdh's Blog
+theme: kiss
+hasCJKLanguage: true
+disqusShortname: 6cdh-github-io
+
+params:
+  info:
+    enableSocial: true
+    poweredby: true
+    related: false
+    codeCopy: false
+    taxonomiesCount: true
+    homeTitle: 6cdh's Blog
+  social:
+    github: 6cdh
+    email: cd6cdh@gmail.com
+    rss: index.xml
+    config:
+      platforms:
+        - github
+        - email
+        - rss
+  features:
+    disqusOnDemand: true
+    katex: true
+    mathjax: false
+  assets:
+    googleFonts:
+    customCSS:
+      - custom.css
+  rss:
+    includeContent: false
+
+markup:
+  highlight:
+    style: lovelace
+
+taxonomies:
+  tag: tags
